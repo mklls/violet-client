@@ -64,7 +64,11 @@ module.exports = {
     'import/no-unresolved': 'off',
     'import/no-extraneous-dependencies': 'off',
     'prefer-promise-reject-errors': 'off',
+    'semi': ['error', 'always'],
+    'quotes': ['error', 'single'],
+    'comma-dangle': ['error', 'never'],
 
+    'no-unused-vars': 'warn',
 
     // allow debugger during development only
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'

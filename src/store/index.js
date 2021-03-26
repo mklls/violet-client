@@ -1,9 +1,15 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import Vue from 'vue';
+import Vuex from 'vuex';
 
-// import example from './module-example'
+import giphy from './giphy';
+import me from './me';
+import status from 'src/config/status';
+import io from './io';
+import rel from './RelationShip';
+// import debug from 'debug';
+// const log = debug('store');
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 /*
  * If not building with SSR mode, you can
@@ -16,14 +22,70 @@ Vue.use(Vuex)
 
 export default function (/* { ssrContext } */) {
   const Store = new Vuex.Store({
+    state: {
+      isAuthenticated: false,
+      accessToken: '',
+      config: {},
+      manualLogout: false
+    },
     modules: {
-      // example
+      giphy, io, me, rel
     },
 
+    mutations: {
+      setAccessToken: function (state, token) {
+        this._vm.$api.setAccessToken(token);
+        state.accessToken = token;
+      },
+      setAuthenticated: (state, value) => (state.isAuthenticated = value),
+      setManualLogout: function (state, manual) {
+        state.manualLogout = manual;
+      }
+    },
+
+    getters: {
+      authenticated: state => state.isAuthenticated,
+      getToken: state => state.accessToken,
+      manualLogout: state => state.manualLogout
+    },
+
+    actions: {
+      login: async function ({ commit, dispatch }, { credential, cb }) {
+        const [httpStatus, data] = await this._vm.$api.getAccessToken(credential);
+        if (httpStatus === 200 && data.code === status.OK) {
+          this._vm.$EStore.set('entry', { ...credential, accessToken: data.accessToken });
+          commit('setAccessToken', data.accessToken);
+          commit('me/update', { email: this._vm.$EStore.get('entry.email') });
+          dispatch('rel/init');
+
+          const onconnect = function () {
+            cb && cb();
+            // 登录成功，显示avatar和arrow
+            commit('setAuthenticated', true);
+            dispatch('me/refresh');
+          };
+          dispatch('io/connect', onconnect);
+        }
+        return [httpStatus, data.code];
+      },
+
+      logout: function ({ commit, dispatch }) {
+        commit('setAuthenticated', false);
+        this._vm.$EStore.set('entry.accessToken', '');
+        dispatch('io/close');
+      },
+
+      forgetPassword: async function ({ state }, email) {
+        const [httpStatus] = await this._vm.$api.forgetPassword(email);
+
+        return httpStatus;
+      }
+    },
     // enable strict mode (adds overhead!)
     // for dev mode only
-    strict: process.env.DEBUGGING
-  })
+    strict: process.env.DEBUGGING,
+    plugins: [Vuex.createLogger()]
+  });
 
-  return Store
+  return Store;
 }

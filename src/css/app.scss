@@ -1,1 +1,36 @@
 // app global css in SCSS form
+
+// 引入twemoji
+@font-face {
+  font-family: CTwemoji;
+  src: url(./fonts/twemoji.ttf);
+}
+
+.bigger-input-font {
+  font-size: 18px
+}
+
+.bigger-input-font-1 {
+  font-size: 16px
+}
+
+.bigger-input-font-2 {
+  font-size: 17px
+}
+
+.bigger-input-font-x {
+  font-size: 19px
+}
+
+* {
+  font-family: Roboto, Arial, sans-serif, CTwemoji, 'Noto Color Emoji', 'Segoe UI Emoji';
+}
+
+.no-select {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}

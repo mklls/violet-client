@@ -7,7 +7,12 @@
 // https://quasar.dev/quasar-cli/quasar-conf-js
 /* eslint-env node */
 
-module.exports = function (/* ctx */) {
+const SocksProxyAgent = require('socks-proxy-agent');
+// const HttpProxyAgent = require('http-proxy-agent');
+const agent = new SocksProxyAgent('socks://127.0.0.1:1089');
+// const hv = new HttpProxyAgent('http://127.0.0.1:8889');
+
+module.exports = function (ctx) {
   return {
     // https://quasar.dev/quasar-cli/supporting-ts
     supportTS: false,
@@ -19,14 +24,22 @@ module.exports = function (/* ctx */) {
     // --> boot files are part of "main.js"
     // https://quasar.dev/quasar-cli/boot-files
     boot: [
-
+      'textarea',
       'i18n',
-      'axios'
+      'moment',
+      'lodash',
+      'status',
+      'debug',
+      'axios',
+      'electron-store',
+      'misc'
     ],
+    dark: 'auto',
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
     css: [
-      'app.scss'
+      'app.scss',
+      'animate.css'
     ],
 
     // https://github.com/quasarframework/quasar/tree/dev/extras
@@ -45,9 +58,19 @@ module.exports = function (/* ctx */) {
 
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
-      vueRouterMode: 'hash', // available values: 'hash', 'history'
+      vueRouterMode: 'history', // available values: 'hash', 'history'
 
       // transpile: false,
+      env: {
+        GIPHY: ctx.dev ? '/giphy' : 'http://api.giphy.com',
+        API: ctx.dev ? '/api' : 'https://api.violex.ml',
+        CDN: ctx.dev ? '/cdn' : 'https://cdn.violex.ml',
+        SECURE_SOCKETIO: !ctx.dev,
+        GIPHY_KEY: 'sjhyEsmgTMw2QJNX2nY7eJQ5VXMoBipr',
+        MAX_UPLOAD_FILE_SIZE: 1024 * 1024 * 50,
+        // socketio
+        IO_PATH: '/ced3acA1F'
+      },
 
       // Add dependencies for transpiling with Babel (Array of string/regex)
       // (from node_modules, which are by default not transpiled).
@@ -70,7 +93,7 @@ module.exports = function (/* ctx */) {
           test: /\.(js|vue)$/,
           loader: 'eslint-loader',
           exclude: /node_modules/
-        })
+        });
       }
     },
 
@@ -78,14 +101,74 @@ module.exports = function (/* ctx */) {
     devServer: {
       https: false,
       port: 8080,
-      open: true // opens browser window automatically
+      open: true, // opens browser window automatically
+      proxy: {
+
+        '/giphy': {
+          agent,
+          target: 'http://api.giphy.com',
+          changeOrigin: true,
+          pathRewrite: {
+            '^/giphy': ''
+          }
+        },
+        '/api': {
+          target: 'https://localhost',
+          pathRewrite: { '^/api': '' },
+          secure: false,
+          changeOrigin: true
+        },
+        // eslint-disable-next-line
+        '/ced3acA1F' : {
+          target: 'https://localhost',
+          ws: true,
+          pathRewrite: { '^/api': '' },
+          secure: false,
+          changeOrigin: true
+        },
+        '/home/violex': {
+          target: 'http://localhost:3200',
+          secure: false,
+          changeOrigin: true,
+          pathRewrite: { '^/home/violex': '' }
+        },
+        // '/api': {
+        //   agent,
+        //   ws: true,
+        //   secure: true,
+        //   target: 'https://api.violex.ml',
+        //   changeOrigin: true,
+        //   pathRewrite: {
+        //     '^/api': '/'
+        //   }
+        //
+        // },
+
+        '/cdn': {
+          agent,
+          target: 'https://cdn.violex.ml',
+          changeOrigin: true,
+          pathRewrite: {
+            '^/cdn': ''
+          }
+        },
+        '/test': {
+          target: 'https://cdn.violex.ml',
+          changeOrigin: true,
+          pathRewrite: {
+            '^/test': ''
+          }
+        }
+      }
     },
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-framework
     framework: {
       iconSet: 'material-icons', // Quasar icon set
       lang: 'en-us', // Quasar language pack
-      config: {},
+      config: {
+        notify: { position: 'bottom', classes: 'bigger-input-font-2' }
+      },
 
       // Possible values for "importStrategy":
       // * 'auto' - (DEFAULT) Auto-import needed Quasar components & directives
@@ -100,13 +183,11 @@ module.exports = function (/* ctx */) {
       // directives: [],
 
       // Quasar plugins
-      plugins: []
+      plugins: ['Notify']
     },
 
-    // animations: 'all', // --- includes all animations
+    animations: 'all', // --- includes all animations
     // https://quasar.dev/options/animations
-    animations: [],
-
     // https://quasar.dev/quasar-cli/developing-ssr/configuring-ssr
     ssr: {
       pwa: false
@@ -166,11 +247,12 @@ module.exports = function (/* ctx */) {
 
     // Full list of options: https://quasar.dev/quasar-cli/developing-electron-apps/configuring-electron
     electron: {
-      bundler: 'packager', // 'packager' or 'builder'
+      bundler: 'builder', // 'packager' or 'builder'
 
       packager: {
         // https://github.com/electron-userland/electron-packager/blob/master/docs/api.md#options
-
+        icon: require('path').join(__dirname, 'src-electron', 'icons', 'icon.ico'),
+        name: 'Violex'
         // OS X / Mac App Store
         // appBundleId: '',
         // appCategoryType: '',
@@ -183,8 +265,17 @@ module.exports = function (/* ctx */) {
 
       builder: {
         // https://www.electron.build/configuration/configuration
+        productName: 'Violet',
+        appId: 'ml.violex.client',
+        compression: 'store',
+        directories: {
+          output: 'dist'
+        },
+        asar: true,
+        linux: {
+          target: 'AppImage'
 
-        appId: 'client'
+        }
       },
 
       // More info: https://quasar.dev/quasar-cli/developing-electron-apps/node-integration
@@ -195,5 +286,5 @@ module.exports = function (/* ctx */) {
         // chainWebpack also available besides this extendWebpack
       }
     }
-  }
-}
+  };
+};
