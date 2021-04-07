@@ -4,6 +4,7 @@
 export default {
   username: 'username',
   name: 'full name',
+  originalName: 'name',
   email: 'email',
   password: 'password',
 
@@ -21,6 +22,12 @@ export default {
       startWith: 'Username should start with a letter.',
       length: 'Username should be between 2-16 characters.',
       dup: 'Username is already taken.'
+    },
+    xnameTips: {
+      be: 'Should consist of letters and numbers.',
+      startWith: 'Should start with a letter.',
+      length: 'Should be between 2-16 characters.',
+      dup: 'Unavailble'
     },
     passwordTips: {
       length: 'Password should be between 8-32 characters.',
@@ -51,19 +58,35 @@ export default {
     }
   },
 
+  contextMenu: {
+    delete: 'Delete friend',
+    unsubscribe: 'Unsubscribe channel',
+    leave: 'Leave group',
+    edit: 'Edit',
+    viewProfile: 'View profile',
+    viewGroup: 'View group info',
+    viewChannel: 'View channel info',
+    deleteChannel: 'Delete channel',
+    deleteGroup: 'Delete group',
+    enableNotification: 'Enable notification',
+    disableNotification: 'Disable notification',
+    markAsRead: 'Mark as read'
+  },
+
   search: {
     all: 'All',
     users: 'Users',
     groups: 'Groups',
     channels: 'Channels',
     seconds: 'seconds',
-    notFound: 'No results found for {keyword}'
+    notFound: 'No results found'
   },
 
   settings: {
     label: 'Settings',
     apply: 'Apply',
     OK: 'OK',
+    bio: 'bio',
     tabs: {
       profile: 'Profile',
       security: 'Security',
@@ -76,6 +99,7 @@ export default {
     autoLogin: 'Auto login',
     behavior: 'Behavior',
     notification: 'Notification',
+    creationDate: 'Creation date',
     enableNotification: 'Desktop notification',
     slientMode: 'Slient mode',
     deleteAccount: 'Delete account',
@@ -88,19 +112,29 @@ export default {
     networkProxyDisable: 'Disable proxy',
     networkProxySystemSettings: 'Use system proxy settings',
     networkProxyCustom: 'Use custom proxy',
-    passwordResetInfo: 'We will send you an email with a link to reset your password.'
+    passwordResetInfo: 'We will send you an email with a link to reset your password.',
+    language: 'Language'
   },
 
   chatPanel: {
     send: 'Send',
-    message: 'Mesasge'
+    message: 'Mesasge',
+    typing: 'typing',
+    upload_video: 'uploading video',
+    upload_audio: 'uploading audio',
+    upload_file: 'uploading file'
   },
 
   common: {
-    ok: 'Ok',
+    ok: 'OK',
     add: 'Add',
+    tag: 'Tag',
     send: 'Send',
     cancel: 'Cancel',
+    video: 'video',
+    audio: 'audio',
+    image: 'image',
+    file: 'file',
     invalid: 'Invalid',
     slientMode: 'Slient mode',
     required: 'Required',
@@ -114,7 +148,19 @@ export default {
     badRequest: 'Bad Request',
     fileSizeLimit: 'The file you are trying to upload is over {maxFileSize}',
     group: 'Group',
-    alias: 'Alias'
+    alias: 'Alias',
+    createGroup: 'Create group',
+    createChannel: 'Create channel',
+    groupname: 'groupname',
+    channelname: 'channelname',
+    description: 'description',
+    name: 'name',
+    online: 'Online',
+    doNotDisturb: 'Do not disturb',
+    offline: 'offline',
+    subscriber: 'subscriber',
+    member: 'member',
+    you: 'you'
   },
 
   tabs: {

@@ -82,6 +82,7 @@ function createWindow () {
     }
   });
 
+  console.log('cnni', process.env.APP_URL);
   mainWindow.loadURL(process.env.APP_URL);
   setProxy();
 
@@ -120,6 +121,9 @@ app.on('activate', () => {
 ipcMain.on('minimize', () => mainWindow.minimize());
 ipcMain.on('maximize', () => mainWindow.maximize());
 ipcMain.on('unmaximize', () => mainWindow.unmaximize());
+ipcMain.on('get locale', () => {
+  mainWindow.webContents.send('locale', app.getLocale());
+});
 
 ipcMain.on('set proxy', (e, a) => {
   setProxy(a.mode, a.proxyServer);

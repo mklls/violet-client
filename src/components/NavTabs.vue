@@ -3,7 +3,7 @@
     <q-tabs
       vertical
       switch-indicator
-      class="relative-position text-grey-9 shadow-1 tabs bg-grey-1"
+      class="relative-position text-grey-7 shadow-1 tabs bg-grey-1"
       active-color="accent"
       outside-arrows
       v-model="tab"
@@ -13,7 +13,6 @@
                    no-caps
                    :label="$t('tabs.chat')"
                    icon="chat" >
-        <q-badge color="grey" rounded floating>2999</q-badge>
       </q-route-tab>
 
       <q-route-tab to="contacts"
@@ -40,13 +39,15 @@
                    name="search"
                    no-caps
                    :label="$t('tabs.search')"
-                   icon="search"/>
+                   icon="search">
+      </q-route-tab>
 
     </q-tabs>
     <q-separator vertical/>
 
     <div style="padding-top: 0; width: calc(100vw - 81px)" class="fixed-height row">
-      <div class="left-panel"><slot name="left-panel"/></div>
+      <div class="left-panel shadow-2"><slot name="left-panel"/></div>
+      <q-separator vertical/>
       <div class="right-panel"><slot name="right-panel"/></div>
     </div>
   </div>
@@ -64,7 +65,7 @@
   }
 
   .right-panel {
-    flex: 3 1 420px
+    flex: 4 1 420px
   }
 
   margin-top: 42px !important;

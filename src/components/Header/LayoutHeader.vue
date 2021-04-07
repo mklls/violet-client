@@ -29,14 +29,22 @@
         class="q-mr-md inline-block"
         v-if="logged"
       >
-        <q-avatar color="primary" size="30px" font-size="18px" class="relative-position" style="line-height: 1em">
-          <q-img v-if="avatar" :src="avatar" :alt="avatar || name"/>
-          <div v-else class="center">{{ name.split('')[0] }} </div>
+        <q-avatar
+          :color="$color(name)"
+          size="30px"
+          font-size="18px"
+          class="relative-position"
+          style="line-height: 1em"
+        >
+          <q-img img-class="full-heigth full-width" v-if="avatar" :src="avatar" :alt="avatar || name"/>
+          <div v-else>{{ name.split('')[0] }} </div>
         </q-avatar>
 
-        <q-icon class="absolute-bottom-right" color="green" name="check_circle" size="12px"/>
+        <q-icon class="absolute-bottom-right" :color="statusColor" :name="statusIcon" size="12px"/>
 
         <avatar-menu
+          @icon="nicon => statusIcon = nicon"
+          @color="color => statusColor = color"
           @openSettings="args => $emit('openSettings', args)"
           @openProfileCard="args => $emit('openProfileCard', args)"
           @openAbout="openAbout = true"
@@ -72,7 +80,7 @@
   </q-header>
 
 </template>
-<style lang="scss" scoped>
+<style lang="scss">
 .main-header {
   height: 42px;
 
@@ -97,7 +105,9 @@ export default {
   data () {
     return {
       icon: 'open_in_full',
-      openAbout: false
+      openAbout: false,
+      statusIcon: 'check_circle',
+      statusColor: 'green'
     };
   },
   created () {

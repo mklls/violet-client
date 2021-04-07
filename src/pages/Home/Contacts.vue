@@ -1,89 +1,122 @@
 <template>
-  <div class="row">
+  <div id="contacts" class="row full-height relative-position">
 
-    <q-scroll-area class="col chat-list">
+    <div
+      v-if="groups.length === 0"
+      class="no-select empty"
+    >
+      <img src="images/well_done.svg"/>
+    </div>
+
+    <q-scroll-area v-else class="col contact-list">
         <q-list>
-          <q-expansion-item
-            label="Fuck Yeah"
-            :value="open">
-          <q-item
-            exact-active-class="chat-active"
-            :active="chatTo === chat.username"
-            :key="chat.username"
-            @click="$emit('update:to', chat.username)"
-            active-class="chat-active"
-            class="chat-item no-select"
-            style="padding: 8px 10px"
-            v-for="chat in chats"
-            clickable v-ripple
-          >
-            <q-item-section
-              style="padding-right: 14px"
-              avatar
-            >
-              <q-avatar size="60px" color="primary" text-color="white">
-                <img class="avatar" v-if="chat.avatar" :src="chat.avatar"/>
-                <div v-else>{{ chat.name.split('')[0] }}</div>
-              </q-avatar>
-            </q-item-section>
+          <div v-for="(group, n) in groups" :key="group.label">
+            <q-expansion-item
+              header-class="text-capitalize"
+              :label="group.label">
 
-            <q-item-section style="justify-content: space-around">
-              <q-item-label lines="1"
-                            class="bigger-input-font-x text-weight-medium">
-                {{ chat.name }}
-              </q-item-label>
+              <q-item
+                v-for="friend in group.friends"
+                :key="friend.username"
+                :active="chatTo === friend.username"
+                @click="chat(friend.username)"
+                active-class="contact-active"
+                class="contact-item no-select"
+                style="padding: 8px 14px"
+                clickable
+                v-ripple
+              >
+                <context-menu
+                  :profile="friend"
+                  @openProfileCard="$emit('openProfileCard',friend)"
+                  @editFriend="$emit('editFriend', friend)"
+                  @deleted="$emit('deleted', friend.username)"
+                />
+                <q-item-section
+                  style="padding-right: 14px"
+                  avatar
+                >
+                  <q-avatar size="60px" font-size="30px" :color="$color(friend.name)" text-color="white">
+                    <img class="avatar" v-if="friend.avatar" :src="friend.avatar"/>
+                    <div v-else>{{ (friend.alias || friend.name).split('')[0] }}</div>
+                  </q-avatar>
+                </q-item-section>
 
-              <q-item-label lines="1" class="bigger-input-font-x text-grey-8 last-message">{{ chat.lastMsg + "   dsjflkkadlsfjlksadjfasjdf"}}</q-item-label>
-            </q-item-section>
+                <q-item-section style="justify-content: space-around">
+                  <q-item-label lines="1" class="bigger-input-font-x text-weight-medium">
+                    {{ friend.alias || friend.name }}
+                  </q-item-label>
 
-            <q-item-section side
-                            style="justify-content:space-evenly">
+                  <q-item-label
+                    lines="1"
+                    class="bigger-input-font-x text-grey-8 last-message"
+                  >{{ latest(friend.username).content}}</q-item-label>
+                </q-item-section>
 
-              <q-item-label>{{ time(chat.time)}}</q-item-label>
+                <q-item-section side style="justify-content:space-evenly" class="bigger-input-font">
+                  <q-item-label v-if="latest(friend.username).time">{{ $time(latest(friend.username).time)}}</q-item-label>
 
-              <q-item-label>
-                <q-badge color="grey-13" rounded text-color="white">999</q-badge>
-              </q-item-label>
-
-            </q-item-section>
-
-            <q-separator />
-          </q-item>
-          </q-expansion-item>
-        </q-list>
+                  <q-item-label>
+                    <q-badge v-if=unreadCount(friend.username)
+                             rounded
+                             text-color="white">{{ unreadCount(friend.username)}}</q-badge>
+                  </q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-expansion-item>
+            <q-separator v-if="n < groups.length - 1"/>
+          </div>
+       </q-list>
     </q-scroll-area>
-
-    <q-separator vertical/>
   </div>
 </template>
 
 <style lang="scss" scoped>
-.chat-list {
-  max-width: 540px;
-  height: calc(100vh - 44px);
+#contacts {
+  .empty {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    width: 100%;
 
-  .last-message {
-    white-space: pre;
-    font-family: Roboto, Arial, sans-serif, CTwemoji, "Noto Color Emoji", "Segoe UI Emoji" !important;
-    margin: 0;
-  }
-
-  .chat-item {
-    & > div > div > div {
-      font-size: 15px;
-      padding: 4px 6px;
+    img {
+      display: inline-block;
+      position: absolute;
+      top: 5%;
+      object-position: center;
+      object-fit: cover;
+      width: 80%;
     }
   }
 
-  .chat-active {
-    color: white !important;
-    background: dodgerblue;
+  .contact-list {
+    max-width: 540px;
+    height: calc(100vh - 44px);
 
-    & > div > div {
+    .last-message {
+      white-space: pre;
+      font-family: Roboto, Arial, sans-serif, CTwemoji, "Noto Color Emoji", "Segoe UI Emoji" !important;
+      margin: 0;
+    }
+
+    .contact-item {
+      & > div > div > div {
+        font-size: 15px;
+        padding: 4px 6px;
+      }
+    }
+
+    .contact-active {
       color: white !important;
+      background: dodgerblue;
 
-      & > div {
-        color: dodgerblue !important;
+      & > div > div {
+        color: white !important;
+
+        & > div {
+          color: dodgerblue !important;
+          background: white !important;
+        }
       }
     }
   }
@@ -92,68 +125,95 @@
 
 <script>
 
+import ContextMenu from 'components/ContextMenu';
 export default {
-  name: 'chats',
+  name: 'contacts',
+  components: { ContextMenu },
   props: ['to'],
   data () {
     return {
-      open: false,
-      currentChat: '',
-      chats: [
-        {
-          username: 'shinobu',
-          avatar: 'https://wallpapercave.com/wp/wp6850699.jpg',
-          banner: 'https://wallpapercave.com/wp/wp6850483.jpg',
-          lastMsg: 'pretty    good',
-          name: 'fuckyeah',
-          time: Date.now(),
-          alias: 'wakaarujisama',
-          bio: 'fucyou'
-        }, {
-          username: 'araragi',
-          name: 's',
-          banner: 'https://images.pexels.com/photos/7196337/pexels-photo-7196337.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260',
-          avatar: 'https://images.pexels.com/photos/2611817/pexels-photo-2611817.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260',
-          time: '2020-3-22',
-          lastMsg: 'Kjk jfkw nvm你nsdsddsdf㩐 赛        Wellff creepy crunchy fucking hard',
-          bio: 'wokaka'
-        }, {
-          name: 'fuck',
-          username: 'nichishiqub asdffaj',
-          banner: '',
-          bio: 'wokaka',
-          time: '2021-2-12',
-          avatar: '',
-          lastMsg: ''
-        }
-      ]
+      open: false
     };
   },
 
   methods: {
 
-    time (t) {
-      const today = this.$moment(Date.now());
-      const date = this.$moment(t);
-      let format;
-
-      if (date.isAfter(today.startOf('day'))) {
-        format = 'HH:mm';
-      } else if (date.isAfter(today.startOf('week'))) {
-        format = 'ddd';
-      } else if (date.isAfter(today.startOf('year'))) {
-        format = 'MM-DD';
-      } else {
-        format = 'YYYY-MM-DD';
-      }
-
-      return date.format(format);
+    chat (username) {
+      this.$emit('update:to', username);
+      this.$emit('update:type', 'private');
     }
   },
 
   computed: {
+    latest () {
+      return function (username) {
+        const messages = this.$store.getters['io/getMessagesFromUser'](username);
+
+        // eslint-disable-next-line prefer-const
+        if (messages.length === 0) {
+          return { time: '', content: '', prefix: '' };
+        }
+
+        let time, content, prefix;
+        const latest = messages[messages.length - 1];
+
+        if (latest.contentType !== 'text') {
+          prefix = latest.contentType + ', ';
+          content = latest.attachment.name;
+        } else {
+          content = latest.content;
+        }
+        // eslint-disable-next-line prefer-const
+        time = latest.time;
+
+        return {
+          time, content, prefix
+        };
+      };
+    },
+
+    unreadCount () {
+      return function (username) {
+        return this.$store.getters['io/getUnreadCountFromUser'](username);
+      };
+    },
+
+    activeNotification () {
+      return function (username) {
+        const enable = this.$store.getters['rel/findFriendByUsername'](username).notification;
+        return {
+          'notification-disable': !enable,
+          'notification-enable': enable
+        };
+      };
+    },
     chatTo () {
       return this.to;
+    },
+
+    tags () {
+      return this.$store.getters['rel/tags'];
+    },
+
+    // 这里的group是指根据用户tag划分的群组不是多人群组
+    groups () {
+      const friends = this.$store.getters['rel/friends'];
+
+      const groups = this.tags.map(t => {
+        return {
+          label: t,
+          friends: friends.filter(f => t === f.tag)
+        };
+      });
+
+      for (let i = 0; i < groups.length; i++) {
+        if (groups[i].label === '') {
+          groups[i].label = this.$t('tabs.contacts');
+          break;
+        }
+      }
+
+      return groups;
     }
   },
 

@@ -24,15 +24,16 @@ module.exports = function (ctx) {
     // --> boot files are part of "main.js"
     // https://quasar.dev/quasar-cli/boot-files
     boot: [
+      'electron-store',
       'textarea',
-      'i18n',
       'moment',
       'lodash',
+      'lazyload',
       'status',
       'debug',
       'axios',
-      'electron-store',
-      'misc'
+      'misc',
+      'i18n'
     ],
     dark: 'auto',
 
@@ -63,7 +64,11 @@ module.exports = function (ctx) {
       // transpile: false,
       env: {
         GIPHY: ctx.dev ? '/giphy' : 'http://api.giphy.com',
+        // API: 'https://localhost',
+        // IO: 'https://localhost',
+        // CDN: 'https://localhost',
         API: ctx.dev ? '/api' : 'https://api.violex.ml',
+        IO: ctx.dev ? '' : 'https://api.violex.ml',
         CDN: ctx.dev ? '/cdn' : 'https://cdn.violex.ml',
         SECURE_SOCKETIO: !ctx.dev,
         GIPHY_KEY: 'sjhyEsmgTMw2QJNX2nY7eJQ5VXMoBipr',
@@ -100,26 +105,27 @@ module.exports = function (ctx) {
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-devServer
     devServer: {
       https: false,
+      host: '127.0.0.1',
       port: 8080,
       open: true, // opens browser window automatically
       proxy: {
-
         '/giphy': {
-          agent,
+          // agent,
           target: 'http://api.giphy.com',
           changeOrigin: true,
           pathRewrite: {
             '^/giphy': ''
           }
         },
+
         '/api': {
           target: 'https://localhost',
           pathRewrite: { '^/api': '' },
           secure: false,
           changeOrigin: true
         },
-        // eslint-disable-next-line
-        '/ced3acA1F' : {
+
+        '/ced3acA1F': {
           target: 'https://localhost',
           ws: true,
           pathRewrite: { '^/api': '' },

@@ -26,13 +26,26 @@ export default function (/* { ssrContext } */) {
       isAuthenticated: false,
       accessToken: '',
       config: {},
-      manualLogout: false
+      manualLogout: false,
+      slientMode: false,
+      notification: false
     },
+
     modules: {
       giphy, io, me, rel
     },
 
     mutations: {
+      setNotification: (state, enable) => {
+        state.notification = enable;
+      },
+      setSlientMode: (state, enable) => {
+        state.slientMode = enable;
+      },
+      reset: state => {
+        state.isAuthenticated = false;
+        state.accessToken = '';
+      },
       setAccessToken: function (state, token) {
         this._vm.$api.setAccessToken(token);
         state.accessToken = token;
@@ -46,11 +59,22 @@ export default function (/* { ssrContext } */) {
     getters: {
       authenticated: state => state.isAuthenticated,
       getToken: state => state.accessToken,
-      manualLogout: state => state.manualLogout
+      manualLogout: state => state.manualLogout,
+      slientMode: state => state.slientMode,
+      notification: state => state.notification
     },
 
     actions: {
+      reset: function ({ commit, dispatch }) {
+        commit('reset');
+        commit('me/reset');
+        commit('rel/reset');
+        commit('io/reset');
+      },
+
       login: async function ({ commit, dispatch }, { credential, cb }) {
+        commit('setSlientMode', this._vm.$EStore.get('slientMode'));
+        commit('setNotification', this._vm.$EStore.get('notification'));
         const [httpStatus, data] = await this._vm.$api.getAccessToken(credential);
         if (httpStatus === 200 && data.code === status.OK) {
           this._vm.$EStore.set('entry', { ...credential, accessToken: data.accessToken });
@@ -70,9 +94,9 @@ export default function (/* { ssrContext } */) {
       },
 
       logout: function ({ commit, dispatch }) {
-        commit('setAuthenticated', false);
         this._vm.$EStore.set('entry.accessToken', '');
-        dispatch('io/close');
+        this._vm.$api.setAccessToken('');
+        dispatch('reset');
       },
 
       forgetPassword: async function ({ state }, email) {

@@ -1,4 +1,4 @@
-export default {
+export default Object.freeze({
   OK: 100,
   INVALID_CREDENTIAL: 101,
   USERNAME_ALREADY_EXISTS: 102,
@@ -20,4 +20,4 @@ export default {
   IO_USER_OFFLINE: 160,
   IO_USER_ONLINE: 161,
   IO_USER_BUSY: 162
-};
+});

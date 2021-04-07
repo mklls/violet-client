@@ -68,13 +68,8 @@
             no-caps
             color="red"
             @click="deleteAccount"
-            :loading="waiting"
             :label="$t('settings.delete')"
-          >
-            <template v-slot:loading v-if="nextEmail">
-              {{ countdownForDeleteAccount }}
-            </template>
-          </q-btn>
+          />
 
           <q-btn
             dense
@@ -97,11 +92,9 @@ export default {
   data () {
     return {
       loading: false,
-      waiting: false,
       nextEmail: false,
       isPwd: true,
       countdownForResetPassword: 60,
-      countdownForDeleteAccount: 1,
       username: '',
       openDialog: false,
       password: '',
@@ -141,17 +134,7 @@ export default {
       }
     },
     async confirmDeleteAccount () {
-      this.waiting = true;
       this.openDialog = true;
-      const timer = setInterval(() => {
-        this.countdownForDeleteAccount--;
-
-        if (this.countdownForDeleteAccount <= 0) {
-          this.countdownForDeleteAccount = 30;
-          clearInterval(timer);
-          this.waiting = false;
-        }
-      }, 1000);
     },
     async deleteAccount () {
       if (!this.$refs.username.validate()) {

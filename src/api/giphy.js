@@ -1,11 +1,13 @@
 import retry from 'async-retry';
 import axios from 'axios';
-const giphy = process.env.GIPHY;
 // eslint-disable-next-line
 const api_key = process.env.GIPHY_KEY;
 const limit = 40;
 const rating = 'g';
 const retryCodes = [408, 500, 502, 503, 504, 522, 524];
+const giphy = axios.create({
+  baseURL: process.env.GIPHY
+});
 
 export default {
   // giphy api 通用接口
@@ -16,7 +18,7 @@ export default {
     let error = null;
     const gifs = retry(async bail => {
       try {
-        const res = await axios.get(url, { params });
+        const res = await giphy.get(url, { params });
         return res.data.data;
       } catch (err) {
         if (!retryCodes.includes(err.response.status)) {
@@ -40,10 +42,10 @@ export default {
   },
 
   async trending () {
-    return await this.fetchGif(`${giphy}/v1/gifs/trending`);
+    return await this.fetchGif('/v1/gifs/trending');
   },
 
   async search (q) {
-    return await this.fetchGif(`${giphy}/v1/gifs/search`, q);
+    return await this.fetchGif('/v1/gifs/search', q);
   }
 };

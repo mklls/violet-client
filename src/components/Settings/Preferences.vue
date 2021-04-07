@@ -19,6 +19,9 @@
     <div class="q-gutter-sm">
       <q-checkbox v-model="slientMode" :label="$t('settings.slientMode')" />
     </div>
+
+    <div class="text-h6 q-mt-sm">{{ $t('settings.language') }}</div>
+    <q-select dense style="width: 200px; margin-left: 8px; margin-top: 8px" v-model="locale" :options="locales"></q-select>
   </div>
 </template>
 
@@ -53,22 +56,51 @@ export default {
 
     enableNotification (nVal, oVal) {
       if (oVal === '') return;
+      this.$store.commit('setNotification', nVal);
       this.$EStore.set('notification', nVal);
       this.debug('Notification %s', nVal);
     },
 
     slientMode (nVal, oVal) {
       if (oVal === '') return;
-      this.$EStore.set('slient', nVal);
+      this.$store.commit('setSlientMode', nVal);
+      this.$EStore.set('slientMode', nVal);
       this.debug('Slient mode %s', nVal);
     }
+
   },
+
+  computed: {
+    locales () {
+      return this.$i18n.availableLocales.map(loc => {
+        return {
+          label: this.map.get(loc),
+          value: loc
+        };
+      });
+    },
+    locale: {
+      get () {
+        return this.map.get(this.$i18n.locale);
+      },
+      set (locale) {
+        this.$root.$i18n.locale = locale.value;
+        console.log(locale.value);
+        this.$EStore.set('locale', locale.value);
+      }
+    }
+  },
+
   created () {
     this.autoLaunch = this.$EStore.get('autoLaunch');
     this.autoLogin = this.$EStore.get('autoLogin');
-    this.enableNotification = this.$EStore.get('notification');
-    this.slientMode = this.$EStore.get('slient');
+    this.enableNotification = this.$store.getters.notification;
+    this.slientMode = this.$store.getters.slientMode;
     this.debug = this.$debug.extend('preferences');
+
+    this.map = new Map();
+    this.map.set('zh-CN', '简体中文');
+    this.map.set('en-US', 'English');
   }
 };
 </script>

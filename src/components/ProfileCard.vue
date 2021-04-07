@@ -1,14 +1,16 @@
 <template>
   <q-dialog transition-show="jump-right" transition-hide="jump-right" v-model="$_open">
     <q-card class="column relative-position profile-card no-scroll">
-      <div class="banner no-select" v-if="profile.isUser">
+      <div class="banner no-select" v-if="isUser">
         <div class="actions row absolute-top">
-          <q-btn v-if="isMe" class="action-btn" v-close-popup unelevated dense @click="$emit('openSettings', 'profile')">
-            <q-icon name="edit"/>
-          </q-btn>
-
-          <q-btn v-else class="action-btn" :loading="loading" @click="handleAction" unelevated dense>
-            <q-icon :name="added ? 'chat' : 'add'"/>
+          <q-btn
+            class="action-btn"
+            :loading="loading"
+            @click="handleAction"
+            unelevated
+            dense
+          >
+            <q-icon :name="isMe ? 'edit' : need ? 'add' : 'chat'"/>
           </q-btn>
         </div>
 
@@ -16,7 +18,7 @@
         <q-avatar
           v-if="profile.avatar || profile.name"
           class="profile-card__avatar non-selectable shadow-1"
-          color="primary"
+          :color="$color(profile.name)"
           text-color="white"
           size="100px"
         >
@@ -35,13 +37,26 @@
         />
 
         <div class="actions row absolute-top-right" v-close-popup>
-          <q-btn v-if="isMyGroupOrChannel" class="action-btn" v-close-popup unelevated dense @click="$emit('openSettings', 'profile')">
-            <q-icon name="chat"/>
+          <q-btn
+            class="action-btn"
+            unelevated
+            dense
+            v-if="isMine"
+            @click="handleAction"
+          >
+            <q-icon name="edit"/>
           </q-btn>
 
-          <q-btn v-else class="action-btn" unelevated dense v-close-popup>
-            <q-icon name="add"/>
+          <q-btn
+            v-else
+            class="action-btn"
+            unelevated
+            dense
+            @click="handleAction"
+          >
+            <q-icon :name="need ? 'add' : 'chat'"/>
           </q-btn>
+
         </div>
       </div>
 
@@ -61,40 +76,14 @@
         <q-item>
           <q-item-section>
             <q-item-label class="bigger-input-font-2 text-grey-10" lines="10">
-              {{ profile.isUser ? profile.bio : profile.description }}
+              {{ isUser ? profile.bio : profile.description }}
             </q-item-label>
           </q-item-section>
         </q-item>
-      </q-list>
 
+      </q-list>
     </q-card>
 
-    <q-dialog v-model="openInnerDialog" v-key="12345" transition-show="fade" transition-hide="fade">
-      <q-card v-if="isUser" class="add-friend">
-        <q-card-section>
-          <q-input
-            maxlength="10"
-            type="text"
-            class="bigger-input-font-1"
-            list="groups"
-            v-model="group"
-            :label="$t('common.group')"/>
-          <q-input class="bigger-input-font-1" v-model="alias" :label="$t('common.alias')"/>
-
-          <datalist id="groups">
-            <option v-for="option in options" :value="option" :key="option"/>
-          </datalist>
-        </q-card-section>
-
-        <q-card-actions align="right">
-          <q-btn :label="$t('common.add')" unelevated no-caps/>
-          <q-btn :label="$t('common.cancel')" unelevated no-caps v-close-popup/>
-        </q-card-actions>
-      </q-card>
-      <q-card v-else>
-
-      </q-card>
-    </q-dialog>
   </q-dialog>
 </template>
 
@@ -180,10 +169,6 @@
   }
 
 }
-
-.add-friend {
-  height: 200px;
-}
 </style>
 
 <script>
@@ -233,40 +218,100 @@ export default {
       return !!this.profile.channelname;
     },
 
-    added () {
+    need () {
+      if (this.isGroup) {
+        return !this
+          .$store
+          .getters['rel/findGroupByGroupname'](this.profile.groupname);
+      }
+
+      if (this.isChannel) {
+        return !this
+          .$store
+          .getters['rel/findChannelByChannelname'](this.profile.channelname);
+      }
+
+      if (this.isUser) {
+        return !this
+          .$store
+          .getters['rel/findFriendByUsername'](this.profile.username);
+      }
       return false;
-    }
-  },
-  methods: {
-    async addFriend () {
-      this.innerLoading = this.loading = true;
-      await this.$store.dispatch('rel/addFriend', this.profile.username);
     },
 
+    isMine () {
+      if (this.isGroup) {
+        return !!this
+          .$store
+          .getters['rel/isMyGroup'](this.profile.groupname);
+      } else {
+        return !!this
+          .$store
+          .getters['rel/isMyChannel'](this.profile.channelname);
+      }
+    },
+
+    tags () {
+      return this.$store.getters['rel/tags'];
+    }
+  },
+
+  methods: {
     async joinGroup () {
       this.loading = true;
       await this.$store.dispatch('rel/joinGroup', this.profile.groupname);
+      this.loading = false;
     },
 
     async subscribeChannel () {
-
+      this.loading = true;
+      await this.$store.dispatch('rel/subscribeChannel', this.profile.channelname);
+      this.loading = false;
     },
-    chat () {
 
+    chat () {
+      let type, xname;
+
+      if (this.isUser) {
+        type = 'private';
+        xname = this.profile.username;
+      } else if (this.isChannel) {
+        type = 'channel';
+        xname = this.profile.channelname;
+      } else if (this.isGroup) {
+        type = 'group';
+        xname = this.profile.groupname;
+      }
+
+      this.$emit('update:to', xname);
+      this.$emit('update:type', type);
+      console.log(xname, type);
     },
 
     async handleAction () {
-      // 如果已经添加则直接发起聊天请求
-      if (this.added) {
+      if (this.isMe) {
+        this.$_open = false;
+        this.$emit('openSettings', 'profile');
+        return;
+      } else if (this.isMine) {
+        this.$_open = false;
+        this.$emit('editGroupOrChannel', this.profile);
+        return;
+      }
 
-      } else {
+      if (this.need) {
+        // 如果已经添加则直接发起聊天请求
         if (this.isUser) {
-          this.openInnerDialog = true;
+          this.$_open = false;
+          this.$emit('addFriend', this.profile);
         } else if (this.isGroup) {
           this.joinGroup();
         } else if (this.isChannel) {
           this.subscribeChannel();
-        };
+        }
+      } else {
+        this.$_open = false;
+        this.chat();
       }
     }
   }

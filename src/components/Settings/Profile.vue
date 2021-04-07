@@ -12,7 +12,7 @@
             name="camera"
             class="cursor-pointer absolute-center"
             color="white"
-            @click="() => !(isAvatar = false) && $refs.picker.pickFiles()"
+            @click="!(isAvatar = false) && $refs.picker.pickFiles()"
           />
 
           <q-spinner
@@ -23,9 +23,14 @@
         </div>
       </q-img>
 
-      <q-avatar class="avatar shadow-6 relative-position" text-color="white" color="primary" square size="80px">
-        <img v-if="avatar" :src="avatar || 'wall.png'">
-        <div v-else>{{name.split('')[0]}}</div>
+      <q-avatar
+        class="avatar shadow-6 relative-position"
+        text-color="white"
+        :color="$color(name)"
+        square size="80px"
+      >
+        <q-img v-if="avatar" :src="avatar"/>
+        <div v-else >{{name.split('')[0]}}</div>
         <div class="avatar-btn banner-btn">
           <q-icon
             @click="() => (isAvatar = true) && $refs.picker.pickFiles()"
@@ -44,7 +49,7 @@
         <q-item class="q-my-sm" clickable v-ripple>
           <q-item-section avatar>
             <q-avatar text-color="grey">
-              <q-icon v-if="!requesting"  name="person" size="md"/>
+              <q-icon v-if="!updatingName"  name="person" size="md"/>
               <q-spinner v-else/>
             </q-avatar>
           </q-item-section>
@@ -58,7 +63,7 @@
             <q-icon name="edit" color="grey" />
           </q-item-section>
 
-          <q-popup-edit v-model="t_name" :validate="val => val.length > 2">
+          <q-popup-edit v-model="newName" :validate="val => val.length > 1 && newName !== name" @before-show="newName = name">
             <template v-slot="{ initialValue, value, emitValue, validate, set }">
               <q-input
                 @keyup.enter="set && setName()"
@@ -67,7 +72,7 @@
                 maxlength="50"
                 counter
                 class="bigger-input-font-1"
-                :value="t_name"
+                :value="newName"
                 :rules="[ val => validate(value) || $t('common.invalid') ]"
                 @input="emitValue"
               >
@@ -114,14 +119,27 @@
           </q-item-section>
         </q-item>
 
+        <q-item class="q-my-sm" clickable v-ripple>
+          <q-item-section avatar>
+            <q-avatar text-color="grey">
+              <q-icon name="cake" size="md"/>
+            </q-avatar>
+          </q-item-section>
+
+          <q-item-section>
+            <q-item-label class="bigger-input-font" lines="2">{{ $moment(createdAt).format('YYYY-MM-DD') }}</q-item-label>
+            <q-item-label caption lines="1">{{ $t('settings.creationDate') }}</q-item-label>
+          </q-item-section>
+        </q-item>
+
         <q-input
           counter
           autogrow
-          v-model="f_bio"
+          v-model="newBio"
           maxlength="128"
           class="bigger-input-font"
           style="padding: 8px 16px"
-          label="bio"
+          :label="$t('settings.bio')"
           @blur="setBio"
           :loading="loading"
         />
@@ -317,12 +335,12 @@ export default {
     return {
       openCropper: false,
       image: '',
-      t_name: '',
+      newName: '',
       file: [],
       // 修改名称中
       loading: false,
-      requesting: false,
-      f_bio: '',
+      updatingName: false,
+      newBio: '',
       // 头像上传中
       uploading: false,
       // 收否上传头像
@@ -341,21 +359,23 @@ export default {
       email: 'me/email',
       name: 'me/name',
       username: 'me/username',
-      brith: 'me/createAt'
+      createdAt: 'me/createdAt'
     })
   },
 
   methods: {
     async setName () {
-      this.requesting = true;
-      await this.$store.dispatch('me/update', { name: this.t_name });
-      this.requesting = false;
+      if (this.name === this.newName || this.newName.length === 0) return;
+
+      this.updatingName = true;
+      await this.$store.dispatch('me/update', { name: this.newName });
+      this.updatingName = false;
     },
 
     async setBio () {
-      if (this.f_bio === this.bio) return;
+      if (this.newBio === this.bio) return;
       this.loading = true;
-      await this.$store.dispatch('me/update', { bio: this.f_bio });
+      await this.$store.dispatch('me/update', { bio: this.newBio });
       this.loading = false;
     },
 
@@ -405,7 +425,7 @@ export default {
   },
 
   created () {
-    this.f_bio = this.bio;
+    this.newBio = this.bio;
   }
 };
 </script>

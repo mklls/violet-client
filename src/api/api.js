@@ -172,7 +172,7 @@ export default {
    * @param username 好友用户名
    * @returns {Promise<[number, any]>}
    */
-  addFriend: async username => await uniPost('/v1/users/friends', { username }),
+  addFriend: async payload => await uniPost('/v1/users/friends', payload),
 
   /**
    * 获取好友列表
@@ -213,6 +213,9 @@ export default {
   // 删除群组
   deleteGroup: async groupname => await uniDelete(`/v1/groups/${groupname}`),
 
+  // 群组通知
+  setGroupNotification: async (target, notification) => await uniPost('/v1/groups/notification', { target, notification }),
+
   // 获取群组列表
   getGroups: async () => await uniGet('/v1/groups'),
 
@@ -230,6 +233,9 @@ export default {
 
   // 更新频道
   updateChannel: async (target, payload) => await uniPost(`/v1/channels/update?target=${target}`, payload),
+
+  // 频道通知
+  setChannelNotification: async (target, notification) => await uniPost('/v1/channels/notification', { target, notification }),
 
   // 删除频道
   deleteChannel: async channelname => await uniDelete(`/v1/channels/${channelname}`),

@@ -13,7 +13,8 @@ export default {
     banner: '',
     _id: '',
     createdAt: '',
-    updatedAt: ''
+    updatedAt: '',
+    status: status.IO_USER_ONLINE
   },
 
   getters: {
@@ -24,6 +25,7 @@ export default {
     avatar: state => state.avatar,
     banner: state => state.banner,
     id: state => state._id,
+    status: state => state.status,
     createdAt: state => state.createdAt,
     updatedAt: state => state.updatedAt,
     me: state => ({
@@ -41,8 +43,14 @@ export default {
 
   mutations: {
     update: (state, payload) => {
-      for (const k in payload) {
-        state[k] = payload[k];
+      for (const prop of Object.keys(payload)) {
+        state[prop] = payload[prop];
+      }
+    },
+    reset: state => {
+      api.setAccessToken('');
+      for (const prop of Object.keys(state)) {
+        state[prop] = '';
       }
     }
   },
@@ -91,13 +99,14 @@ export default {
 
       return [httpStatus, data.code];
     },
-    deleteAccount: async ({ rootState }) => {
-      const [httpStatus] = await api.deleteAccount();
+
+    deleteAccount: async () => {
+      const [httpStatus, data] = await api.deleteAccount();
       if (httpStatus === 200) {
         api.setAccessToken('');
       }
 
-      return httpStatus;
+      return [httpStatus, data.code];
     }
   }
 };

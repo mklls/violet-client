@@ -47,7 +47,7 @@ function responseCheck (code) {
     noti = map.timeout;
   } else if (code >= 400 && code < 500) {
     noti = map.badRequest;
-    console.log('bad_____________request');
+    console.log('bad request');
   } else if (code >= 500) {
     noti = map.serverError;
   } else if (code >= 200 && code < 300) {
@@ -88,10 +88,11 @@ axios.interceptors.request.use(config => {
 });
 
 axios.interceptors.response.use(function (res) {
-  info('Response %s %s %O', res.config.method, res.config.url, res.data);
+  info('Response %s %s %s %O', res.config.method, res.config.url, res.status, res.data);
+
   return res;
 }, function (err) {
-  error('$o', err);
+  error('%o', err.response);
   if (err.config['axios-retry']) {
     handler(err.config['axios-retry'].lastRequestTime, err.response.status);
   } else {

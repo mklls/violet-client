@@ -1,23 +1,23 @@
 <template>
-  <q-menu max-width="200px">
+  <q-menu max-width="280px">
     <div class="q-py-sm column avatar-menu">
       <div class="row  q-px-md menu-header">
         <q-avatar
           v-close-popup
-          color="primary"
+          :color="$color(name)"
           font-size="32px"
           text-color="white"
           size="56px"
           class="q-mr-sm q-mb-sm cursor-pointer no-select flex flex-center"
           @click="$emit('openProfileCard', me)"
         >
-          <q-img v-if="avatar" :src="avatar" :alt="avatar || name"/>
+          <q-img width="100%" height="100%" v-if="avatar" :src="avatar" :alt="avatar || name"/>
           <div v-else class="center">{{ name.split('')[0] }} </div>
         </q-avatar>
 
         <div class="profile-name column  ellipsis-2-lines justify-center content-center ">
           <div id="name" class="text-subtitle1 bigger-input-font">{{ name }}</div>
-          <div id="username" class="cursor-pointer">@{{ username }}</div>
+          <div id="username" class="caption">@{{ username }}</div>
         </div>
 
       </div>
@@ -25,7 +25,7 @@
       <q-list class="profile-header q-mt-sm no-select" dense>
         <q-item v-ripple clickable>
           <q-item-section style="flex: auto">
-            <q-icon name="check_circle" :color="statusColor"/>
+            <q-icon :name="statusIcon" :color="statusColor"/>
           </q-item-section>
 
           <q-item-section>{{$t(statusText)}}</q-item-section>
@@ -36,7 +36,9 @@
 
           <q-menu auto-close anchor="top end" self="top start">
             <q-list dense >
-              <q-item clickable>
+              <q-item
+                @click="$store.dispatch('io/updateStatus', $status.IO_USER_ONLINE)"
+                clickable>
                 <q-item-section style="flex: auto">
                   <q-icon name="check_circle" color="green"/>
                 </q-item-section>
@@ -44,7 +46,9 @@
                 <q-item-section no-wrap>{{$t('avatarMenu.status.online')}}</q-item-section>
               </q-item>
 
-              <q-item clickable>
+              <q-item
+                @click="$store.dispatch('io/updateStatus', $status.IO_USER_BUSY)"
+                clickable>
                 <q-item-section style="flex: auto">
                   <q-icon name="do_not_disturb_on" color="red"/>
                 </q-item-section>
@@ -52,7 +56,9 @@
                 <q-item-section no-wrap>{{$t('avatarMenu.status.doNotDisturb')}}</q-item-section>
               </q-item>
 
-              <q-item clickable>
+              <q-item
+                @click="$store.dispatch('io/updateStatus', $status.IO_USER_OFFLINE)"
+                clickable>
                 <q-item-section style="flex: auto">
                   <q-icon name="circle" color="grey"/>
                 </q-item-section>
@@ -117,7 +123,6 @@ export default {
     return {
       avatarLoaded: false,
       slient: '',
-      status: 'Online',
       openAbout: false
     };
   },
@@ -125,7 +130,15 @@ export default {
     slient (nVal, oVal) {
       if (oVal === '') { return; }
 
-      this.$EStore.set('slient', nVal);
+      this.$store.commit('setSlientMode', nVal);
+      this.$EStore.set('slientMode', nVal);
+    },
+    statusIcon (nVal) {
+      console.log('new icon', nVal);
+      this.$emit('icon', nVal);
+    },
+    statusColor (nVal) {
+      this.$emit('color', nVal);
     }
   },
   computed: {
@@ -134,7 +147,8 @@ export default {
       name: 'me/name',
       bio: 'me/bio',
       avatar: 'me/avatar',
-      banner: 'me/banner'
+      banner: 'me/banner',
+      status: 'me/status'
     }),
     me () {
       return {
@@ -148,9 +162,9 @@ export default {
     statusColor () {
       let color = 'green';
       switch (this.status) {
-        case 'Online': color = 'green'; break;
-        case 'Appear offline': color = 'grey'; break;
-        case 'Do not disturb': color = 'red'; break;
+        case this.$status.IO_USER_ONLINE: color = 'green'; break;
+        case this.$status.IO_USER_BUSY: color = 'red'; break;
+        case this.$status.IO_USER_OFFLINE: color = 'grey'; break;
       }
 
       return color;
@@ -158,9 +172,9 @@ export default {
     statusText () {
       let text = 'online';
       switch (this.status) {
-        case 'online': text = 'online'; break;
-        case 'do not disturb': text = 'doNotDisturb'; break;
-        case 'appear offline': text = 'appearOffline'; break;
+        case this.$status.IO_USER_ONLINE: text = 'online'; break;
+        case this.$status.IO_USER_BUSY: text = 'doNotDisturb'; break;
+        case this.$status.IO_USER_OFFLINE: text = 'appearOffline'; break;
       }
 
       return 'avatarMenu.status.' + text;
@@ -168,9 +182,9 @@ export default {
     statusIcon () {
       let icon = 'check_circle';
       switch (this.status) {
-        case 'Online': icon = 'check_circle'; break;
-        case 'Do not disturb': icon = 'do_not_disturb_on'; break;
-        case 'Appear offline': icon = 'circle'; break;
+        case this.$status.IO_USER_ONLINE: icon = 'check_circle'; break;
+        case this.$status.IO_USER_BUSY: icon = 'do_not_disturb_on'; break;
+        case this.$status.IO_USER_OFFLINE: icon = 'circle'; break;
       }
 
       return icon;

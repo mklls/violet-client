@@ -8,18 +8,26 @@ const getters = {
 
 const mutations = {
   setGifs: (state, payload) => {
-    state.gifs = payload;
+    while (state.gifs.pop());
+    payload.forEach(gif => state.gifs.push(gif));
+  },
+  reset: state => {
+    while (state.gifs.pop());
   }
 };
 
 const actions = {
   init: async ctx => {
     const gifs = await giphy.trending();
-    ctx.commit('setGifs', gifs);
+    if (gifs) {
+      ctx.commit('setGifs', gifs);
+    }
   },
   search: async (ctx, q) => {
     const gifs = await giphy.search(q);
-    ctx.commit('setGifs', gifs);
+    if (gifs) {
+      ctx.commit('setGifs', gifs);
+    }
   }
 };
 

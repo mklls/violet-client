@@ -40,7 +40,7 @@
                   self="center middle"
                   content-style="font-size: 1.2em"
                 >
-                  {{ gif.title }}
+                  {{ gif.title}}
                 </q-tooltip>
               </div>
             </div>
@@ -113,17 +113,19 @@ export default {
 
     allgifs () {
       return this.$store.getters['giphy/allGifs'].map(gif => ({
-        id: gif.slug,
+        id: gif.id,
         title: gif.title,
         preview: {
-          width: gif.images.fixed_width.width,
-          height: gif.images.fixed_width.height,
-          url: gif.images.fixed_width.url
+          width: gif.images.fixed_width_downsampled.width,
+          height: gif.images.fixed_width_downsampled.height,
+          url: gif.images.fixed_width_downsampled.webp,
+          size: gif.images.fixed_width_downsampled.webp_size
         },
         original: {
           width: gif.images.original.width,
           height: gif.images.original.height,
-          url: gif.images.original.url
+          size: gif.images.original.webp_size,
+          url: gif.images.original.webp
         }
       }));
     },

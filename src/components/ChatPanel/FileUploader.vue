@@ -6,16 +6,18 @@
           filled
           ref="picker"
           :max-file-size="maxFileSize"
-          :rules="[val => !!val || $t('common.required')]"
           v-model="file"
           style="width: 250px;max-width: 280px"
           :loading="uploading"
+          @rejected="reject"
+          @input="$emit('select', file)"
         >
         </q-file>
       </q-card-section>
 
       <q-card-actions align="right" style="padding: 8px 16px 16px">
         <q-btn
+          :disable="!file"
           flat
           no-caps
           class="q-px-sm text-white bg-teal"
@@ -43,7 +45,6 @@ export default {
     return {
       file: null,
       uploading: false,
-      cdn: process.env.CDN,
       percentage: 0
     };
   },
@@ -72,6 +73,11 @@ export default {
         type: Boolean,
         default: false
       }
+    },
+
+    onUploadProgress: {
+      type: Function,
+      default: Function.prototype
     }
   },
 
@@ -90,36 +96,43 @@ export default {
       }
     },
     maxFileSize () {
-      return process.env.MAX_UPLOAD_FILE_SIZE;
+      return parseInt(process.env.MAX_UPLOAD_FILE_SIZE, 10);
     }
   },
 
   methods: {
-    upload () {
-      if (!this.$refs.picker.validate()) {
+    reject (v) {
+      this.$q.notify({
+        type: 'negative',
+        message: this.$t('common.fileSizeLimit', { maxFileSize: this.$readableBytes(this.maxFileSize) })
+      });
+    },
+    async upload () {
+      if (!this.file) {
         return;
       }
 
-      console.log(this.token);
-      console.log(this.file);
-      this.uploading = true;
-      // const url = this.cdn + '/static/0d5c221d9bae490c4fe8fde11e3c8292/application/0d21b0.mkv';
-      const form = new FormData();
-      form.append('file', this.files);
-      this.file = null;
-      this.$refs.picker.resetValidation();
-      //
-      // this.$axios
-      //   .get(url, {
-      //     onUploadProgress (e) {
-      //       console.log(e);
-      //     }
-      //   })
-      //   .then(response => {
-      //     console.log(response);
-      //   });
+      const originalType = this.file.type.split('/')[0];
+      this.file.fileType = originalType;
 
-      setTimeout(() => (this.uploading = false), 3000);
+      if (originalType !== 'video' && originalType !== 'audio' && originalType !== 'image') {
+        this.file.fileType = 'file';
+      }
+
+      this.$emit('start', this.file);
+
+      const [httpStatus, data] = await this.$api.upload({ file: this.file }, this.onUploadProgress);
+
+      data.file.fileType = this.file.fileType;
+
+      if (httpStatus !== 201) {
+        this.$emit('error', httpStatus);
+      } else {
+        this.$emit('uploaded', data.file);
+      }
+
+      this.file = null;
+      this.uploading = false;
     }
   }
 };

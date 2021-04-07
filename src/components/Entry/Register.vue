@@ -15,7 +15,7 @@
       <template v-slot:prepend>
         <q-icon name="person"/>
       </template>
-      <template v-slot:append v-if="usernameAvaliable">
+      <template v-slot:append v-if="usernameAvailable">
         <q-icon name="done" color="green"/>
       </template>
     </q-input>
@@ -34,7 +34,7 @@
       <template v-slot:prepend>
         <q-icon name="face"/>
       </template>
-      <template v-slot:append v-if="nameAvaliable">
+      <template v-slot:append v-if="nameAvailable">
         <q-icon name="done" color="green"/>
       </template>
     </q-input>
@@ -52,7 +52,7 @@
       <template v-slot:prepend>
         <q-icon name="mail_outline"/>
       </template>
-      <template v-slot:append v-if="emailAvaliable">
+      <template v-slot:append v-if="emailAvailable">
         <q-icon color="green" name="done"/>
       </template>
     </q-input>
@@ -100,9 +100,9 @@ export default {
   data () {
     return {
       loading: false,
-      nameAvaliable: false,
-      usernameAvaliable: false,
-      emailAvaliable: false,
+      nameAvailable: false,
+      usernameAvailable: false,
+      emailAvailable: false,
       // 控制动画
       usernamePass: true,
       passwordPass: true,
@@ -159,16 +159,18 @@ export default {
   },
   watch: {
     username: function () {
-      this.usernameAvaliable = false;
+      this.usernameAvailable = false;
       this.debounceCheckUsername();
     },
     email: function () {
-      this.emailAvaliable = false;
+      this.emailAvailable = false;
       this.debounceCheckEmail();
     },
     name: function () {
-      this.nameAvaliable = false;
-      this.$refs.name.validate() && (this.nameAvaliable = true);
+      this.nameAvailable = false;
+      if (this.name.length >= 1 && this.name.length <= 50) {
+        this.nameAvailable = true;
+      }
     }
   },
 
@@ -176,7 +178,7 @@ export default {
     checkUsername () {
       if (!this.$refs.username.validate()) return;
 
-      this.usernameAvaliable = false;
+      this.usernameAvailable = false;
       this.checkingUsername = true;
       // 调用api检查用户名是否可用
       this.$api.checkXname(this.username).then(([code, data]) => {
@@ -185,13 +187,13 @@ export default {
         if (code < 200 || code >= 300) return;
 
         if (data.code === 100) {
-          this.usernameAvaliable = true;
+          this.usernameAvailable = true;
         } else {
           // 由于检查可用性是异步操作，所以需要动态添加规则
           this.usernameRules.push(
             () => this.$t('entry.usernameTips.dup')
           );
-          this.usernameAvaliable = false;
+          this.usernameAvailable = false;
           this.$refs.username.validate();
           this.usernameRules.pop();
         }
@@ -201,36 +203,41 @@ export default {
       if (!this.$refs.email.validate()) return;
 
       this.checkingEmail = true;
-      this.emailAvaliable = false;
+      this.emailAvailable = false;
       this.$api.checkEmail(this.email).then(([code, data]) => {
         this.checkingEmail = false;
         if (code < 200 || code >= 300) return;
 
         if (data.code === 100) {
-          this.emailAvaliable = true;
+          this.emailAvailable = true;
         } else {
           this.emailRules.push(
             () => this.$t('entry.emailTips.dup')
           );
-          this.emailAvaliable = false;
+          this.emailAvailable = false;
           this.$refs.email.validate();
           this.emailRules.pop();
         }
       });
     },
 
-    register () {
+    async register () {
+      if (this.name.length >= 1 && this.name.length <= 50) {
+        this.nameAvailable = true;
+      } else {
+        this.nameAvailable = false;
+      }
+
       if (!this.$refs.password.validate() ||
         !this.$refs.email.validate() ||
         !this.$refs.name.validate() ||
         !this.$refs.username.validate() ||
-        !this.usernameAvaliable ||
-        !this.emailAvaliable ||
-        !this.nameAvaliable) {
+        !this.usernameAvailable ||
+        !this.emailAvailable ||
+        !this.nameAvailable) {
         // 防止自动载入上次登录信息的情况下不显示邮箱重复
-        this.debounceCheckEmail();
-        this.debounceCheckUsername();
         this.checkEmail();
+        this.checkUsername();
         return;
       }
 
@@ -244,6 +251,7 @@ export default {
         this.loading = false;
 
         if (code === 201) {
+          this.usernameAvailable = this.nameAvailable = this.emailAvailable = false;
           this.$q.notify({ type: 'positive', message: this.$t('entry.registerDone') });
         } else {
           this.$q.notify({ type: 'negative', message: this.$t('entry.registerAbort') });
@@ -257,6 +265,8 @@ export default {
     if (this.email) {
       this.debounceCheckEmail();
     }
+  },
+  mounted () {
   }
 };
 </script>
