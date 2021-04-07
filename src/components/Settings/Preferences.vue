@@ -17,7 +17,7 @@
     </div>
 
     <div class="q-gutter-sm">
-      <q-checkbox v-model="slientMode" :label="$t('settings.slientMode')" />
+      <q-checkbox v-model="silentMode" :label="$t('settings.silentMode')" />
     </div>
 
     <div class="text-h6 q-mt-sm">{{ $t('settings.language') }}</div>
@@ -37,7 +37,7 @@ export default {
       autoLaunch: '',
       autoLogin: '',
       enableNotification: '',
-      slientMode: ''
+      silentMode: ''
     };
   },
   watch: {
@@ -61,11 +61,11 @@ export default {
       this.debug('Notification %s', nVal);
     },
 
-    slientMode (nVal, oVal) {
+    silentMode (nVal, oVal) {
       if (oVal === '') return;
-      this.$store.commit('setSlientMode', nVal);
-      this.$EStore.set('slientMode', nVal);
-      this.debug('Slient mode %s', nVal);
+      this.$store.commit('setsilentMode', nVal);
+      this.$EStore.set('silentMode', nVal);
+      this.debug('silent mode %s', nVal);
     }
 
   },
@@ -95,7 +95,7 @@ export default {
     this.autoLaunch = this.$EStore.get('autoLaunch');
     this.autoLogin = this.$EStore.get('autoLogin');
     this.enableNotification = this.$store.getters.notification;
-    this.slientMode = this.$store.getters.slientMode;
+    this.silentMode = this.$store.getters.silentMode;
     this.debug = this.$debug.extend('preferences');
 
     this.map = new Map();

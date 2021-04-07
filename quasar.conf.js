@@ -273,14 +273,17 @@ module.exports = function (ctx) {
         // https://www.electron.build/configuration/configuration
         productName: 'Violet',
         appId: 'ml.violex.client',
-        compression: 'store',
         directories: {
           output: 'dist'
         },
+        compression: 'maximum',
         asar: true,
         linux: {
           target: 'AppImage'
-
+        },
+        win: {
+          target: '7z',
+          icon: './public/icons/icon.ico'
         }
       },
 

@@ -93,12 +93,6 @@
     max-width: 540px;
     height: calc(100vh - 44px);
 
-    .last-message {
-      white-space: pre;
-      font-family: Roboto, Arial, sans-serif, CTwemoji, "Noto Color Emoji", "Segoe UI Emoji" !important;
-      margin: 0;
-    }
-
     .contact-item {
       & > div > div > div {
         font-size: 15px;

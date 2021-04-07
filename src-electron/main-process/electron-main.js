@@ -1,4 +1,4 @@
-import { app, BrowserWindow, nativeTheme, ipcMain, Tray } from 'electron';
+import { app, BrowserWindow, nativeTheme, ipcMain, Tray, Menu } from 'electron';
 import debug from 'debug';
 import Store from 'electron-store';
 import path from 'path';
@@ -104,6 +104,10 @@ app.on('ready', createWindow);
 app.whenReady().then(() => {
   const icon = path.resolve(__statics, 'favicon-128x128.png');
   tray = new Tray(icon);
+  const contextMenu = Menu.buildFromTemplate([
+    { role: 'close' },
+  ]);
+  tray.setContextMenu(contextMenu);
 });
 
 app.on('window-all-closed', () => {

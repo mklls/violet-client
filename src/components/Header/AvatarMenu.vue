@@ -88,10 +88,10 @@
 
         <q-item tag="label" v-ripple>
           <q-item-section>
-            <q-item-label>{{ $t('common.slientMode') }}</q-item-label>
+            <q-item-label>{{ $t('common.silentMode') }}</q-item-label>
           </q-item-section>
           <q-item-section side>
-            <q-toggle size="xs" color="accent" v-model="slient" val="picture" />
+            <q-toggle size="xs" color="accent" v-model="silent" val="picture" />
           </q-item-section>
         </q-item>
         <q-separator class="q-my-sm"/>
@@ -122,16 +122,16 @@ export default {
   data () {
     return {
       avatarLoaded: false,
-      slient: '',
+      silent: '',
       openAbout: false
     };
   },
   watch: {
-    slient (nVal, oVal) {
+    silent (nVal, oVal) {
       if (oVal === '') { return; }
 
-      this.$store.commit('setSlientMode', nVal);
-      this.$EStore.set('slientMode', nVal);
+      this.$store.commit('setsilentMode', nVal);
+      this.$EStore.set('silentMode', nVal);
     },
     statusIcon (nVal) {
       console.log('new icon', nVal);
@@ -198,7 +198,7 @@ export default {
     }
   },
   created () {
-    this.slient = this.$EStore.get('slient');
+    this.silent = this.$EStore.get('silent');
   }
 };
 </script>

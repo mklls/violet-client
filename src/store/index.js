@@ -27,7 +27,7 @@ export default function (/* { ssrContext } */) {
       accessToken: '',
       config: {},
       manualLogout: false,
-      slientMode: false,
+      silentMode: false,
       notification: false
     },
 
@@ -39,8 +39,8 @@ export default function (/* { ssrContext } */) {
       setNotification: (state, enable) => {
         state.notification = enable;
       },
-      setSlientMode: (state, enable) => {
-        state.slientMode = enable;
+      setsilentMode: (state, enable) => {
+        state.silentMode = enable;
       },
       reset: state => {
         state.isAuthenticated = false;
@@ -60,7 +60,7 @@ export default function (/* { ssrContext } */) {
       authenticated: state => state.isAuthenticated,
       getToken: state => state.accessToken,
       manualLogout: state => state.manualLogout,
-      slientMode: state => state.slientMode,
+      silentMode: state => state.silentMode,
       notification: state => state.notification
     },
 
@@ -73,7 +73,7 @@ export default function (/* { ssrContext } */) {
       },
 
       login: async function ({ commit, dispatch }, { credential, cb }) {
-        commit('setSlientMode', this._vm.$EStore.get('slientMode'));
+        commit('setsilentMode', this._vm.$EStore.get('silentMode'));
         commit('setNotification', this._vm.$EStore.get('notification'));
         const [httpStatus, data] = await this._vm.$api.getAccessToken(credential);
         if (httpStatus === 200 && data.code === status.OK) {

@@ -1,5 +1,5 @@
 <template>
-  <div class="settings__profile column">
+  <div class="settings__profile column no-scroll">
     <div class="banner shadow-6 no-select">
       <q-img class="bg" :src="banner || 'fall.png'">
         <div

@@ -101,9 +101,10 @@
 
               <div v-else-if="m.contentType === 'file'" class="message-file">
                 <div class="flex no-wrap">
-                  <div class="file-avatar">
+                  <div class="file-avatar cursor-pointer" @click="download">
                     <q-icon name="folder"/>
                   </div>
+                  <a class="download" ref="download" :href="m.content" download/>
                   <div class="file-info selectable-text">
                     <q-item-label lines="1" class="file-name">{{m.attachment.name}}</q-item-label>
                     <q-item-label lines="1" class="file-size grey">{{$readableBytes(m.attachment.size)}}</q-item-label>
@@ -275,6 +276,10 @@
       height: 100%;
     }
 
+    .download {
+      display: none;
+    }
+
     .message-audio,.message-file {
       max-width: 320px;
     }
@@ -294,7 +299,7 @@
       }
 
       .file-size {
-        font-size: 18px;
+        font-size: 16px;
       }
     }
   }
@@ -486,7 +491,7 @@ export default {
     },
 
     subtitle () {
-      let sub;
+      let sub = '';
 
       if (this.actions.length === 0) {
         switch (this.type) {
@@ -516,9 +521,10 @@ export default {
         if (this.type === 'private') {
           sub = this.$t('chatPanel.' + this.actions[0].type);
         } else {
+          console.log('actions jdkflasjfdlaskdjf');
           for (let i = 0; i < this.actions.length; i++) {
             console.log(this.actions[i]);
-            sub += this.from + ' ' + this.$t('chatPanel.' + this.actions[i].type);
+            sub += this.actions[i].from + ' ' + this.$t('chatPanel.' + this.actions[i].type);
 
             if (i !== this.actions.length - 1) {
               sub += ',';
@@ -601,6 +607,10 @@ export default {
   },
 
   methods: {
+    download () {
+      console.log(this.$refs.download);
+      this.$refs.download[0].click();
+    },
     view () {
       this.$q.electron.shell.openPath('/home/violex/Dev/Nodejs/violet/client/public/cache/image/ryuuko.png');
     },

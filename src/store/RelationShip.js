@@ -104,8 +104,6 @@ export default {
       if (index === -1) return;
 
       state.groups[index].members.push(user);
-
-      logger.info('Add %s to group:%s', user.username, groupname);
     },
 
     removeGroupMember: (state, { groupname, username }) => {

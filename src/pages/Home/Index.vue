@@ -131,13 +131,21 @@ export default {
       body = '';
       if (!this.$store.getters.notification) return;
 
+      // 判断是否为发送方开启通知
       if (message.messageType === 'private' &&
         !this.$store.getters['rel/findFriendByUsername'](message.from).notification) {
         return;
-      } else if (message.Type === 'channel' &&
+      } else if (message.messageType === 'channel' &&
         !this.$store.getters['rel/findChannelByChannelname'](message.to).notification) {
         return;
-      } else if (this.$store.getters['rel/findGroupByGroupname'](message.to).notification) {
+      } else if (message.messageType === 'group' &&
+        !this.$store.getters['rel/findGroupByGroupname'](message.to).notification) {
+        return;
+      }
+
+      // 判断时候开启勿扰模式
+
+      if (this.$store.getters['me/status'] === this.$status.IO_USER_BUSY) {
         return;
       }
 
@@ -160,7 +168,7 @@ export default {
         title: from.alias || from.name,
         icon: from.avatar || path.join(__statics, 'favicon-128x128.png'),
         body,
-        slient: this.$store.getters.slientMode
+        silent: this.$store.getters.silentMode
       };
 
       console.log(notification);
