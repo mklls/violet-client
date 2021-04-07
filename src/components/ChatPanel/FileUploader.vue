@@ -25,6 +25,7 @@
           align="between"
           :label="$t('chatPanel.send')"
           :loading="uploading"
+          :percentage="percentage"
           @click="upload"
         >
           <template v-slot:loading>
@@ -73,11 +74,6 @@ export default {
         type: Boolean,
         default: false
       }
-    },
-
-    onUploadProgress: {
-      type: Function,
-      default: Function.prototype
     }
   },
 
@@ -101,7 +97,10 @@ export default {
   },
 
   methods: {
-    reject (v) {
+    onUploadProgress (per) {
+      this.percentage = per;
+    },
+    reject () {
       this.$q.notify({
         type: 'negative',
         message: this.$t('common.fileSizeLimit', { maxFileSize: this.$readableBytes(this.maxFileSize) })
@@ -121,6 +120,7 @@ export default {
 
       this.$emit('start', this.file);
 
+      this.uploading = true;
       const [httpStatus, data] = await this.$api.upload({ file: this.file }, this.onUploadProgress);
 
       data.file.fileType = this.file.fileType;
@@ -133,6 +133,7 @@ export default {
 
       this.file = null;
       this.uploading = false;
+      this.percentage = 0;
     }
   }
 };

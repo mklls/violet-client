@@ -134,7 +134,7 @@
 
             <q-popup-edit
               v-model="newName"
-              :validate="val => val.length > 1 && newName !== profile.name"
+              :validate="val => val.length > 0 && newName !== profile.name"
               @before-show="newName = profile.name"
             >
               <template v-slot="{ initialValue, value, emitValue, validate, set }">

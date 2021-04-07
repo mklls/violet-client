@@ -63,7 +63,7 @@
             <q-icon name="edit" color="grey" />
           </q-item-section>
 
-          <q-popup-edit v-model="newName" :validate="val => val.length > 1 && newName !== name" @before-show="newName = name">
+          <q-popup-edit v-model="newName" :validate="val => val.length > 0 && newName !== name" @before-show="newName = name">
             <template v-slot="{ initialValue, value, emitValue, validate, set }">
               <q-input
                 @keyup.enter="set && setName()"

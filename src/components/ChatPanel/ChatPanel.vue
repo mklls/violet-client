@@ -554,7 +554,6 @@ export default {
     },
 
     to: function (newVal, oldVal) {
-      console.log('lalala to');
       if (newVal) {
         setTimeout(() => {
           this.$refs.messageArea.setScrollPosition(this.unreadPosition, 400);
@@ -563,7 +562,6 @@ export default {
     },
     actions: function (n, o) {
       if (n.length === o.length && n.length === 0) return;
-      console.log('actions lalala');
 
       setTimeout(() => {
         this.$refs.messageArea.setScrollPosition(999999999, 250);
@@ -588,7 +586,6 @@ export default {
 
         if (latest.read === true && this.messages.from === this.myUsername) return;
 
-        console.log('lalalalalalal messages');
         setTimeout(() => {
           // 啦呀啦
           this.$refs.messageArea.setScrollPercentage(1, 200);

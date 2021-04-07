@@ -131,6 +131,16 @@ export default {
       body = '';
       if (!this.$store.getters.notification) return;
 
+      if (message.messageType === 'private' &&
+        !this.$store.getters['rel/findFriendByUsername'](message.from).notification) {
+        return;
+      } else if (message.Type === 'channel' &&
+        !this.$store.getters['rel/findChannelByChannelname'](message.to).notification) {
+        return;
+      } else if (this.$store.getters['rel/findGroupByGroupname'](message.to).notification) {
+        return;
+      }
+
       if (message.messageType === 'group') {
         from = this.$store.getters['rel/findGroupByGroupname'](message.to);
         body = message.from + ': ';
