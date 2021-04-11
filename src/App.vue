@@ -22,15 +22,18 @@ export default {
           return;
         }
 
-        if (locale.inclues('en')) {
+        if (locale.includes('en')) {
           this.$i18n.locale = 'en-US';
-          this.$moment.locale('en-US');
-        } else if (locale.inclues('zh')) {
+          this.$moment.locale('en');
+        } else if (locale.includes('zh')) {
           this.$i18n.locale = 'zh-CN';
-          this.$moment.locale('en-US');
+          this.$moment.locale('zh-cn');
+        } else if (locale.includes('ja')) {
+          this.$i18n.locale = 'ja';
+          this.$moment.locale = 'ja';
         } else {
           this.$i18n.locale = 'en-US';
-          this.$moment.locale('en-US');
+          this.$moment.locale('en');
         }
       });
 

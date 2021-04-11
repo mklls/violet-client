@@ -85,7 +85,21 @@ export default {
       },
       set (locale) {
         this.$root.$i18n.locale = locale.value;
-        console.log(locale.value);
+
+        if (locale.includes('en')) {
+          this.$i18n.locale = 'en-US';
+          this.$moment.locale('en');
+        } else if (locale.includes('zh')) {
+          this.$i18n.locale = 'zh-CN';
+          this.$moment.locale('zh-cn');
+        } else if (locale.includes('ja')) {
+          this.$i18n.locale = 'ja';
+          this.$moment.locale = 'ja';
+        } else {
+          this.$i18n.locale = 'en-US';
+          this.$moment.locale('en');
+        }
+
         this.$EStore.set('locale', locale.value);
       }
     }
@@ -101,6 +115,7 @@ export default {
     this.map = new Map();
     this.map.set('zh-CN', '简体中文');
     this.map.set('en-US', 'English');
+    this.map.set('ja', '日本語');
   }
 };
 </script>

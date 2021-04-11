@@ -39,7 +39,7 @@ export default {
     registerDone: '注册成功请检查您的收件箱激活帐号。',
     forgetDone: '一封包含密码重置链接的邮件已发送至您的收件箱。',
     registerAbort: '注册失败。',
-    invalidCredential: '用户名获密码无效。',
+    invalidCredential: '用户名或密码无效。',
     unverified: '请先验证您的邮箱。'
   },
 

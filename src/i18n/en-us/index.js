@@ -27,7 +27,7 @@ export default {
       be: 'Should consist of letters and numbers.',
       startWith: 'Should start with a letter.',
       length: 'Should be between 2-16 characters.',
-      dup: 'Unavailble'
+      dup: 'Unavailable'
     },
     passwordTips: {
       length: 'Password should be between 8-32 characters.',
@@ -37,10 +37,10 @@ export default {
       lowercase: 'At least a lowercase character.'
     },
     emailTips: {
-      dup: 'Eamil is already taken.'
+      dup: 'Email is already taken.'
     },
     registerDone: 'An email has been sent for verification.',
-    forgetDone: 'An email with the password reset link has been sent your inbox',
+    forgetDone: 'An email with the password reset link has been sent your inbox.',
     registerAbort: 'Failed to register a account.',
     invalidCredential: 'Invalid username or password.',
     unverified: 'Please verify your email first.'
