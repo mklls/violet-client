@@ -122,7 +122,8 @@ export default {
     typing: 'typing',
     upload_video: 'uploading video',
     upload_audio: 'uploading audio',
-    upload_file: 'uploading file'
+    upload_file: 'uploading file',
+    textAreaPlaceholder: 'Type something here'
   },
 
   common: {

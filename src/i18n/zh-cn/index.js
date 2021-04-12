@@ -119,7 +119,8 @@ export default {
     typing: '输入中',
     upload_video: '正在上传视频',
     upload_audio: '正在上传音频',
-    upload_file: '正在上传文件'
+    upload_file: '正在上传文件',
+    textAreaPlaceholder: '在此处输入'
   },
 
   common: {

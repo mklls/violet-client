@@ -197,7 +197,7 @@
 
             <textarea-autosize
               class="q-ma-sm input-box col-auto"
-              placeholder="Type something here..."
+              :placeholder="$t('chatPanel.textAreaPlaceholder')"
               ref="messageTextarea"
               v-model="text"
 
@@ -314,20 +314,6 @@
     margin-left: 20px;
     margin-right: 20px;
     position: relative;
-  }
-
-  .q-message-text--sent {
-    //background: teal;
-    //&:before {
-    //  background: teal;
-    //}
-  }
-
-  .q-message-text--received {
-    //background: aliceblue;
-    //&:before {
-    //  background: aliceblue;
-    //}
   }
 
   .shadow-down {

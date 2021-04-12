@@ -5,7 +5,7 @@ import giphy from './giphy';
 import me from './me';
 import status from 'src/config/status';
 import io from './io';
-import rel from './RelationShip';
+import rel from './Relationship';
 // import debug from 'debug';
 // const log = debug('store');
 

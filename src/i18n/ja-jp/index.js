@@ -119,7 +119,8 @@ export default {
     typing: 'タイピング',
     upload_video: '動画のアップロード',
     upload_audio: 'オーディオのアップロード',
-    upload_file: 'ファイルのアップロード'
+    upload_file: 'ファイルのアップロード',
+    textAreaPlaceholder: 'ここに何かを入力する'
   },
 
   common: {
