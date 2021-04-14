@@ -63,7 +63,7 @@ export default {
 
     silentMode (nVal, oVal) {
       if (oVal === '') return;
-      this.$store.commit('setsilentMode', nVal);
+      this.$store.commit('setSilentMode', nVal);
       this.$EStore.set('silentMode', nVal);
       this.debug('silent mode %s', nVal);
     }

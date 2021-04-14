@@ -8,7 +8,7 @@
              clearable
              clear-icon="clear"
              :bottom-slots="false"
-             placeholder="Search something">
+             >
       <template v-slot:prepend>
         <q-icon name="search"/>
       </template>

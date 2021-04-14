@@ -39,7 +39,7 @@ export default function (/* { ssrContext } */) {
       setNotification: (state, enable) => {
         state.notification = enable;
       },
-      setsilentMode: (state, enable) => {
+      setSilentMode: (state, enable) => {
         state.silentMode = enable;
       },
       reset: state => {
@@ -73,8 +73,9 @@ export default function (/* { ssrContext } */) {
       },
 
       login: async function ({ commit, dispatch }, { credential, cb }) {
-        commit('setsilentMode', this._vm.$EStore.get('silentMode'));
+        commit('setSilentMode', this._vm.$EStore.get('silentMode'));
         commit('setNotification', this._vm.$EStore.get('notification'));
+
         const [httpStatus, data] = await this._vm.$api.getAccessToken(credential);
         if (httpStatus === 200 && data.code === status.OK) {
           this._vm.$EStore.set('entry', { ...credential, accessToken: data.accessToken });
@@ -82,11 +83,11 @@ export default function (/* { ssrContext } */) {
           commit('me/update', { email: this._vm.$EStore.get('entry.email') });
           dispatch('rel/init');
 
-          const onconnect = function () {
-            cb && cb();
+          const onconnect = async function () {
             // 登录成功，显示avatar和arrow
             commit('setAuthenticated', true);
             dispatch('me/refresh');
+            cb && cb();
           };
           dispatch('io/connect', onconnect);
         }
@@ -107,8 +108,7 @@ export default function (/* { ssrContext } */) {
     },
     // enable strict mode (adds overhead!)
     // for dev mode only
-    strict: process.env.DEBUGGING,
-    plugins: [Vuex.createLogger()]
+    strict: process.env.DEBUGGING
   });
 
   return Store;

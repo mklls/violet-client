@@ -292,10 +292,42 @@ const getters = {
   getAllMessages: state => state.messages,
   getMessageById: state => id => state.messages.find(m => m._id === id),
 
-  getMessagesFromUser: (state, getters, rootState, rootGetters) => username => {
+  getImagesFromUser: (state, getters, rootState, rootGetters) => username => {
     const me = rootGetters['me/username'];
-    return state.messages.filter(m => (m.from === me && m.to === username) || (m.from === username && m.to === me));
+
+    return state
+      .messages
+      .filter(m => m.contentType === 'image' && (
+        (m.from === username && m.to === me) ||
+        (m.from === me && m.to === username))
+      )
+      .map(m => {
+        return {
+          src: m.content,
+          alt: m.attachment.name,
+          caption: m.attachment.name,
+          size: m.attachment.size
+        };
+      });
   },
+
+  getImagesFromGroupOrChannel: (state) => xname =>
+    state
+      .messages
+      .filter(m => m.to === xname && m.contentType === 'image')
+      .map(m => {
+        return {
+          src: m.content,
+          alt: m.attachment.name,
+          size: m.attachment.size
+        };
+      }),
+
+  getMessagesFromUser: (state, getters, rootState, rootGetters) =>
+    username => {
+      const me = rootGetters['me/username'];
+      return state.messages.filter(m => (m.from === me && m.to === username) || (m.from === username && m.to === me));
+    },
 
   getMessagesFromGroupOrChannel: state => xname => state.messages.filter(m => m.to === xname),
 

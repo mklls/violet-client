@@ -28,7 +28,7 @@ module.exports = function (ctx) {
       'textarea',
       'moment',
       'lodash',
-      'lazyload',
+      'tinybox',
       'status',
       'debug',
       'axios',

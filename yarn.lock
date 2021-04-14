@@ -5895,6 +5895,13 @@ ignore@^5.1.1, ignore@^5.1.4:
   resolved "https://registry.npm.taobao.org/ignore/download/ignore-5.1.8.tgz#f150a8b50a34289b33e22f5889abd4d8016f0e57"
   integrity sha1-8VCotQo0KJsz4i9YiavU2AFvDlc=
 
+img-vuer@^0.19.3:
+  version "0.19.3"
+  resolved "https://registry.npmjs.org/img-vuer/-/img-vuer-0.19.3.tgz#88f4f712ee4a0b7ca61faab89a21bf7a42500c74"
+  integrity sha512-Fu6jP8liWJC1PZk3OVACt479d93dyegzPbUtpqtkNQS1Hc04REFzlmax7fvRl2RL+uXhucKKyN3XiYhzLuSETQ==
+  dependencies:
+    v-finger-mk42 "^2.0.4"
+
 immediate@~3.0.5:
   version "3.0.6"
   resolved "https://registry.yarnpkg.com/immediate/-/immediate-3.0.6.tgz#9db1dbd0faf8de6fbe0f5dd5e56bb606280de69b"
@@ -10580,6 +10587,11 @@ uuid@^8.3.2:
   resolved "https://registry.npm.taobao.org/uuid/download/uuid-8.3.2.tgz?cache=0&sync_timestamp=1607460209394&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fuuid%2Fdownload%2Fuuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
   integrity sha1-gNW1ztJxu5r2xEXyGhoExgbO++I=
 
+v-finger-mk42@^2.0.4:
+  version "2.0.4"
+  resolved "https://registry.npmjs.org/v-finger-mk42/-/v-finger-mk42-2.0.4.tgz#47d5fcdaa643937451e2bf8972c49e26c2830b4f"
+  integrity sha512-KX+oXC3/dHgT82I7EzDwHUUKVZzgYNhjmfoJ4pYjRIcW67ZUubhOgNm1X6Shd9aViIE15/Y5QaVWQCpjRjBcag==
+
 v8-compile-cache@^2.0.3:
   version "2.3.0"
   resolved "https://registry.npm.taobao.org/v8-compile-cache/download/v8-compile-cache-2.3.0.tgz?cache=0&sync_timestamp=1614993639567&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fv8-compile-cache%2Fdownload%2Fv8-compile-cache-2.3.0.tgz#2de19618c66dc247dcfb6f99338035d8245a2cee"
@@ -10685,11 +10697,6 @@ vue-i18n@^8.0.0:
   resolved "https://registry.npm.taobao.org/vue-i18n/download/vue-i18n-8.23.0.tgz?cache=0&sync_timestamp=1614440039141&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fvue-i18n%2Fdownload%2Fvue-i18n-8.23.0.tgz#4a65681a1dfe716d47e1d00ddbd6e0b88ea36735"
   integrity sha1-SmVoGh3+cW1H4dAN29bguI6jZzU=
 
-vue-lazyload@^1.3.3:
-  version "1.3.3"
-  resolved "https://registry.npmjs.org/vue-lazyload/-/vue-lazyload-1.3.3.tgz#4df50a271bde9b74c3caf7a228d6e0af50d5682f"
-  integrity sha512-uHnq0FTEeNmqnbBC2aRKlmtd9LofMZ6Q3mWvgfLa+i9vhxU8fDK+nGs9c1iVT85axSua/AUnMttIq3xPaU9G3A==
-
 vue-loader@15.9.5:
   version "15.9.5"
   resolved "https://registry.npm.taobao.org/vue-loader/download/vue-loader-15.9.5.tgz#7a960dc420a3439deaacdda038fdcdbf7c432706"
@@ -10755,6 +10762,11 @@ vue-textarea-autosize@^1.1.1:
   integrity sha512-B33Mg5ZDEfj/whhoPBLg25qqAdGHGM2NjDT99Qi5MXRyeLmXb4C3s6EprAHqy3nU0cooWXFU+IekI5DpoEbnFg==
   dependencies:
     core-js "^2.6.5"
+
+vue-tinybox@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.npmjs.org/vue-tinybox/-/vue-tinybox-1.3.0.tgz#6a374303ec7e39b5891ac6a3f953e87eb410d7dd"
+  integrity sha512-Lju95JItQgTfaCzuH+98UjOXLDre5GpgZVAdZHXg9vVM4HiY5mBTQrTj02XL1Cu9cINox2gQhMvvYPkzAY83nw==
 
 vue-waterfall@^1.0.6:
   version "1.0.6"

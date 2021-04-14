@@ -83,6 +83,7 @@
                 v-else-if="m.contentType ==='image'"
                 :src="m.content"
                 class="non-selectable message-image"
+                @click="$emit('openViewer', {images, currentImage: m.content})"
               />
 
               <video
@@ -274,6 +275,8 @@
     .message-video,.message-image,.message-text {
       width: 100%;
       height: 100%;
+      max-height: 50vh;
+      width: auto;
     }
 
     .download {
@@ -285,7 +288,6 @@
     }
 
     .message-file {
-
       .file-avatar {
         color: darkslategrey;
         display: flex;
@@ -405,7 +407,6 @@ export default {
       let height = 0;
       // scrollarea 自带三个孩子
       // 偏移
-      const OFFSET = 3;
       let unreadBegin = this.messages.findIndex(msg => msg.from !== this.myUsername && msg.read === false);
 
       if (unreadBegin === -1) {
@@ -446,6 +447,14 @@ export default {
       }
 
       return msgs;
+    },
+
+    images () {
+      if (this.type === 'private') {
+        return this.$store.getters['io/getImagesFromUser'](this.to);
+      } else {
+        return this.$store.getters['io/getImagesFromGroupOrChannel'](this.to);
+      }
     },
 
     actions () {
@@ -507,9 +516,7 @@ export default {
         if (this.type === 'private') {
           sub = this.$t('chatPanel.' + this.actions[0].type);
         } else {
-          console.log('actions jdkflasjfdlaskdjf');
           for (let i = 0; i < this.actions.length; i++) {
-            console.log(this.actions[i]);
             sub += this.actions[i].from + ' ' + this.$t('chatPanel.' + this.actions[i].type);
 
             if (i !== this.actions.length - 1) {
@@ -537,6 +544,7 @@ export default {
         'text-primary': this.actions.length > 0
       };
     }
+
   },
   watch: {
     text: function (newVal) {

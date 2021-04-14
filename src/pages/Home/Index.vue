@@ -28,6 +28,7 @@
           @deleted="handleDelete"
           @openProfileCard="handleOpenProfileCard"
           @editFriend="handleEditFriend"
+          @openViewer="handleOpenViewer"
         />
       </template>
     </nav-tabs>
@@ -55,8 +56,30 @@
       @updateProfileName="v => profile.name = v"
       @updateProfileDescription="v => profile.description = v"
     />
+
+    <tinybox
+      v-if="openViewer"
+      :images="gallery"
+      :index="currentImage"
+      no-thumbs
+      @close="openViewer = false"
+      @prev="val => currentImage = val"
+      @next="val => currentImage = val"
+    />
+
   </div>
 </template>
+
+<style lang="scss">
+  .tinybox {
+    margin-top: 42px;
+    height: calc(100vh - 42px);
+
+    .tinybox__thumbs {
+      overflow: hidden;
+    }
+  }
+</style>
 
 <script>
 import NavTabs from 'components/NavTabs';
@@ -75,6 +98,7 @@ export default {
     return {
       // 弹出设置面板
       chatType: '',
+      openViewer: false,
       openSettings: false,
 
       // 弹出资料卡片
@@ -93,6 +117,10 @@ export default {
 
       // 搜索tab
       cate: 'all',
+
+      // 图片
+      gallery: [],
+      currentImage: 0,
 
       // 资料卡片数据
       profile: {
@@ -209,6 +237,16 @@ export default {
       }
 
       this.openGroupOrChannelEditDialog = true;
+    },
+
+    handleOpenViewer (arg) {
+      while (this.gallery.pop());
+
+      arg.images.forEach(image => this.gallery.push(image));
+      console.log('current gallery ', this.gallery);
+
+      this.currentImage = this.gallery.findIndex(image => arg.currentImage === image.src);
+      this.openViewer = true;
     },
 
     handleEditFriend (profile) {

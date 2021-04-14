@@ -130,7 +130,7 @@ export default {
     silent (nVal, oVal) {
       if (oVal === '') { return; }
 
-      this.$store.commit('setsilentMode', nVal);
+      this.$store.commit('setSilentMode', nVal);
       this.$EStore.set('silentMode', nVal);
     },
     statusIcon (nVal) {
@@ -140,6 +140,7 @@ export default {
     statusColor (nVal) {
       this.$emit('color', nVal);
     }
+
   },
   computed: {
     ...mapGetters({
@@ -198,7 +199,7 @@ export default {
     }
   },
   created () {
-    this.silent = this.$EStore.get('silent');
+    this.silent = this.$EStore.get('silentMode');
   }
 };
 </script>
