@@ -162,7 +162,7 @@
     >
       <div
         class="relative-position"
-        style="overflow: hidden !important; height: 600px; max-width: 80vw; max-height: 75vh"
+        style="overflow: hidden !important; height:75vh; max-width: 80vw; max-height: 75vh"
       >
         <cropper
           ref="cropper"
@@ -327,6 +327,7 @@
 import { mapGetters } from 'vuex';
 import { Cropper } from 'vue-advanced-cropper';
 import 'vue-advanced-cropper/dist/style.css';
+import 'vue-advanced-cropper/dist/theme.compact.css';
 
 export default {
   name: 'profile',

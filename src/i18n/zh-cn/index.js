@@ -45,7 +45,7 @@ export default {
 
   avatarMenu: {
     edit: '编辑个人信息',
-    preferences: '偏好',
+    preferences: ' 首选项',
     logout: '注销',
     about: '关于',
     status: {
@@ -89,7 +89,7 @@ export default {
       security: '安全',
       storage: '存储',
       network: '网络',
-      preferences: '偏好'
+      preferences: '首选项'
     },
 
     autoLaunch: '开机时启动',
