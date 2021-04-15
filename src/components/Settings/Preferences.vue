@@ -84,7 +84,8 @@ export default {
         return this.map.get(this.$i18n.locale);
       },
       set (locale) {
-        this.$root.$i18n.locale = locale.value;
+        locale = locale.value;
+        this.$root.$i18n.locale = locale;
 
         if (locale.includes('en')) {
           this.$i18n.locale = 'en-US';
@@ -94,13 +95,13 @@ export default {
           this.$moment.locale('zh-cn');
         } else if (locale.includes('ja')) {
           this.$i18n.locale = 'ja';
-          this.$moment.locale = 'ja';
+          this.$moment.locale('ja');
         } else {
           this.$i18n.locale = 'en-US';
           this.$moment.locale('en');
         }
 
-        this.$EStore.set('locale', locale.value);
+        this.$EStore.set('locale', locale);
       }
     }
   },

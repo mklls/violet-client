@@ -26,7 +26,6 @@ export default function (/* { store, ssrContext } */) {
     base: process.env.VUE_ROUTER_BASE
   });
   Router.beforeEach(function (to, from, next) {
-    console.log(to);
     next();
   });
   return Router;
