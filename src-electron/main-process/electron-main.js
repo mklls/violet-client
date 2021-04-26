@@ -65,7 +65,7 @@ function createWindow () {
   mainWindow = new BrowserWindow({
     width: 1340,
     height: 800,
-    minWidth: 860,
+    minWidth: 900,
     minHeight: 600,
     useContentSize: true,
     frame: false, // <-- add this
@@ -105,7 +105,7 @@ app.whenReady().then(() => {
   const icon = path.resolve(__statics, 'favicon-128x128.png');
   tray = new Tray(icon);
   const contextMenu = Menu.buildFromTemplate([
-    { role: 'close' },
+    { role: 'close' }
   ]);
   tray.setContextMenu(contextMenu);
 });

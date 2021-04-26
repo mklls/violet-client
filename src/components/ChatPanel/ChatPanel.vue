@@ -272,9 +272,12 @@
       margin-right: 30px;
     }
 
-    .message-video,.message-image,.message-text {
-      width: 100%;
-      height: 100%;
+    .message-video,.message-image {
+      img,video {
+        width: 100%;
+      }
+
+      max-width: 100%;
       max-height: 50vh;
       width: auto;
     }
@@ -703,7 +706,6 @@ export default {
       if (msg.from === this.myUsername) return;
       if (msg.read) return;
 
-      console.log('read', msg.from, this.myUsername, msg._id, msg);
       this.$store.dispatch('io/readMessage', { from: msg.from, to: msg.to, messageID, type: this.type });
     },
 

@@ -313,7 +313,7 @@ export default {
         users = 'subscribers';
       }
 
-      return this.$store.getters[type](xname)?.[users];
+      return this.$store.getters[type](xname)[users];
     }
   },
 

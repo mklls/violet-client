@@ -9,7 +9,7 @@ export default {
     login: '登录',
     register: '注册',
     forgetPassword: '忘记密码',
-    passwordReset: '重置明码',
+    passwordReset: '重置密码',
 
     nameTips: {
       length: '名称由1-50个字符组成。'

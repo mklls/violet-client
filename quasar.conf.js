@@ -62,6 +62,7 @@ module.exports = function (ctx) {
       vueRouterMode: 'history', // available values: 'hash', 'history'
 
       // transpile: false,
+      // azure服务器
       env: {
         GIPHY: ctx.dev ? '/giphy' : 'http://api.giphy.com',
         // API: 'https://localhost',
@@ -76,6 +77,22 @@ module.exports = function (ctx) {
         // socketio
         IO_PATH: '/ced3acA1F'
       },
+
+      // 本地服务器
+      // env: {
+      //   GIPHY: ctx.dev ? '/giphy' : 'http://api.giphy.com',
+      //   // API: 'https://localhost',
+      //   // IO: 'https://localhost',
+      //   // CDN: 'https://localhost',
+      //   API: 'https://localhost',
+      //   IO: 'https://localhost',
+      //   CDN: 'https://localhost',
+      //   SECURE_SOCKETIO: false,
+      //   GIPHY_KEY: 'sjhyEsmgTMw2QJNX2nY7eJQ5VXMoBipr',
+      //   MAX_UPLOAD_FILE_SIZE: 1024 * 1024 * 50,
+      //   // socketio
+      //   IO_PATH: '/ced3acA1F'
+      // },
 
       // Add dependencies for transpiling with Babel (Array of string/regex)
       // (from node_modules, which are by default not transpiled).

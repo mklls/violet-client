@@ -51,7 +51,6 @@ export default {
     addFriend: (state, friend) => state.friends.push(friend),
 
     updateFriend: (state, { username, ...data }) => {
-      console.log(data);
       const index = state.friends.findIndex(f => f.username === username);
       if (index === -1) return;
       const newObj = { ...state.friends[index] };
@@ -384,9 +383,9 @@ export default {
     findChannelByChannelname: state => channelname => state.channels.find(c => c.channelname === channelname),
     tags: state => [...new Set(state.friends.map(f => f.tag))],
     isMyGroup: (state, getters, rootState, rootGetters) => groupname => rootGetters['me/username'] ===
-      state.groups.find(g => g.groupname === groupname)?.owner?.username,
+      state.groups.find(g => g.groupname === groupname)?.owner.username,
     isMyChannel: (state, getters, rootState, rootGetters) => channelname => rootGetters['me/username'] ===
-      state.channels.find(c => c.channelname === channelname)?.owner?.username,
+      state.channels.find(c => c.channelname === channelname)?.owner.username,
     isMyFriend: state => username => !!state.friends.find(f => f.username === username),
     findGroupMemberByUsername: state => (groupname, username) => {
       const group = state.groups.find(g => g.groupname === groupname);
