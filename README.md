@@ -1,9 +1,10 @@
 # Violex (client)
 
 
-## ***Use Node 12***
-
 A Quasar Framework app
+
+## Screenshot
+![screenshot](./screenshot/Screenshot.png)
 
 ## Install the dependencies
 ```bash
